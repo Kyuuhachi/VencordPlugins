@@ -1,0 +1,54 @@
+.c98-history-modal-head {
+    display: grid;
+    grid-template:
+         "t x" auto
+         "r r" 1fr
+         / 1fr auto;
+}
+
+.c98-history-modal-head:nth-child(1) { grid-area: "t"; }
+.c98-history-modal-head:nth-child(2) { grid-area: "x"; }
+.c98-history-modal-head:nth-child(3) { grid-area: "r"; }
+
+.c98-history-contents {
+    padding-top: 1em;
+    height: 25em;
+    max-height: 90%;
+    display: grid;
+    grid-template: "a" 1fr / 1fr;
+}
+
+.c98-history-content {
+    grid-area: a;
+}
+
+.c98-history-content:not(.c98-history-content-active) {
+    visibility: hidden;
+}
+
+.c98-history-revisions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5em;
+}
+
+.c98-history-revision {
+    cursor: pointer;
+    color: var(--interactive-normal);
+    background: none;
+}
+
+.c98-history-timestamp {
+    cursor: unset;
+}
+
+.c98-history-revision:hover {
+    color: var(--interactive-hover);
+    background-color: var(--background-modifier-hover)
+}
+
+.c98-history-revision-active {
+    color: var(--interactive-active);
+    background-color: var(--background-modifier-active)
+}
