@@ -9,7 +9,7 @@ const STYLE = document.createElement("style");
 STYLE.id = "_98classify";
 
 export default definePlugin({
-    name: "98Classify",
+    name: "Classify",
     description: "Adds css-friendly class names.",
     authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
 
