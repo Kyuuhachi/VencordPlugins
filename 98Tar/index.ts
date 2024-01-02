@@ -13,10 +13,7 @@ export default definePlugin({
 });
 
 async function saveTar() {
-    // Load all chunks, hopefully
-    await Promise.all(Array(100).fill().map((_, i) =>
-        Vencord.Webpack.wreq.e(i).catch(() => {})
-    ));
+    await forceLoadAll(Vencord.Webpack.wreq);
 
     const tar = new TarFile();
     const buildNumber = getBuildNumber();
@@ -36,6 +33,23 @@ async function saveTar() {
 function getBuildNumber() {
     return Vencord.Webpack.findByProps("analyticsTrackingStoreMaker", "getCampaignParams")
         .default.getSuperProperties().client_build_number;
+}
+
+async function forceLoadAll(wreq) {
+    let chunks;
+    const sym = Symbol("forceLoadAll");
+    Object.defineProperty(Object.prototype, sym, {
+        get() { chunks = this; },
+        set() { },
+        configurable: true,
+    });
+    wreq.el(sym);
+    delete Object.prototype[sym];
+
+    const ids = new Set(Object.values(chunks).flat());
+    await Promise.all(Array.from(ids).map(id =>
+        wreq.e(id).catch(() => {})
+    ));
 }
 
 class TarFile {
