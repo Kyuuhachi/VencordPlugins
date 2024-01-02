@@ -24,7 +24,7 @@ async function saveTar() {
         value = value.__original || value;
         tar.addTextFile(
             `discord-${buildNumber}/${num}.js`,
-            `webpack[${JSON.stringify(num)}] = ${value.toString()}`
+            `webpack[${JSON.stringify(num)}] = ${value.toString()};\n`
         );
     });
     tar.save(`discord-${buildNumber}.tar`);
