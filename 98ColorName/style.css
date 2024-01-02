@@ -1,5 +1,6 @@
 :root {
     --98-message-color-saturation: /*DYNAMIC*/;
+    --98-message-color: var(--text-normal);
 }
 
 @supports (color: color-mix(in lab, red, blue)) {
