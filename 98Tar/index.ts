@@ -1,4 +1,7 @@
 import definePlugin from "@utils/types";
+import { Logger } from "@utils/Logger";
+
+const logger = new Logger("98Tar", "#CAA698");
 
 export default definePlugin({
     name: "98Tar",
@@ -35,6 +38,23 @@ function getBuildNumber() {
         .default.getSuperProperties().client_build_number;
 }
 
+async function protectWebpack(webpack, body) {
+    let push = webpack.push.bind(webpack)
+    let webpack_push = Object.getOwnPropertyDescriptor(webpack, "push");
+    Object.defineProperty(webpack, "push", {
+        get: () => push,
+        set() { throw "nested webpack" },
+        enumerable: true,
+        configurable: true,
+    });
+
+    try {
+        await body();
+    } finally {
+        Object.defineProperty(webpack, "push", webpack_push);
+    }
+}
+
 async function forceLoadAll(wreq) {
     let chunks;
     const sym = Symbol("forceLoadAll");
@@ -46,10 +66,20 @@ async function forceLoadAll(wreq) {
     wreq.el(sym);
     delete Object.prototype[sym];
 
-    const ids = new Set(Object.values(chunks).flat());
-    await Promise.all(Array.from(ids).map(id =>
-        wreq.e(id).catch(() => {})
-    ));
+    await protectWebpack(webpackChunkdiscord_app, async () => {
+        const ids = Object.keys(chunks);
+        let count = 0, errors = 0;
+        await Promise.all(ids.map(async id => {
+            try {
+                await wreq.el(id);
+            } catch(e) {
+                logger.error(e);
+                errors++;
+            }
+            count++;
+            logger.log(`Loading webpack chunks... (${count}/${ids.length}${errors == 0 ? "" : `, ${errors} errors`})`)
+        }));
+    })
 }
 
 class TarFile {
