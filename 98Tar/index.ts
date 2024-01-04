@@ -16,7 +16,9 @@ export default definePlugin({
 });
 
 async function saveTar() {
-    await forceLoadAll(Vencord.Webpack.wreq);
+    await protectWebpack(webpackChunkdiscord_app, async () => {
+        await forceLoadAll(Vencord.Webpack.wreq);
+    });
 
     const tar = new TarFile();
     const buildNumber = getBuildNumber();
@@ -49,7 +51,7 @@ async function protectWebpack(webpack, body) {
     });
 
     try {
-        await body();
+        return await body();
     } finally {
         Object.defineProperty(webpack, "push", webpack_push);
     }
@@ -66,20 +68,18 @@ async function forceLoadAll(wreq) {
     wreq.el(sym);
     delete Object.prototype[sym];
 
-    await protectWebpack(webpackChunkdiscord_app, async () => {
-        const ids = Object.keys(chunks);
-        let count = 0, errors = 0;
-        await Promise.all(ids.map(async id => {
-            try {
-                await wreq.el(id);
-            } catch(e) {
-                logger.error(e);
-                errors++;
-            }
-            count++;
-            logger.log(`Loading webpack chunks... (${count}/${ids.length}${errors == 0 ? "" : `, ${errors} errors`})`)
-        }));
-    })
+    const ids = Object.keys(chunks);
+    let count = 0, errors = 0;
+    await Promise.all(ids.map(async id => {
+        try {
+            await wreq.el(id);
+        } catch(e) {
+            logger.error(e);
+            errors++;
+        }
+        count++;
+        logger.log(`Loading webpack chunks... (${count}/${ids.length}${errors == 0 ? "" : `, ${errors} errors`})`)
+    }));
 }
 
 class TarFile {
