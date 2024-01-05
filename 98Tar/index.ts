@@ -21,7 +21,8 @@ async function saveTar() {
     });
 
     const tar = new TarFile();
-    const buildNumber = getBuildNumber();
+    const { buildNumber, builtAt } = getBuildNumber();
+    const mtime = (builtAt/1000)|0;
     // Can't use Vencord.Webpack here, since we're dealing with unevaluated sources.
     const modules = Object.assign({}, ...webpackChunkdiscord_app.map(a => a[1]));
 
@@ -29,15 +30,18 @@ async function saveTar() {
         value = value.__original || value;
         tar.addTextFile(
             `discord-${buildNumber}/${num}.js`,
-            `webpack[${JSON.stringify(num)}] = ${value.toString()}\n`
+            `webpack[${JSON.stringify(num)}] = ${value.toString()}\n`,
+            { mtime },
         );
     });
     tar.save(`discord-${buildNumber}.tar`);
 }
 
 function getBuildNumber() {
-    return Vencord.Webpack.findByProps("analyticsTrackingStoreMaker", "getCampaignParams")
-        .default.getSuperProperties().client_build_number;
+    const initSentry = Vencord.Webpack.findByProps("initSentry").initSentry.toString();
+    const [, buildNumber] = initSentry.match(/\.setTag\("buildNumber",\(\w+="(\d+)","\1"\)\)/);
+    const [, builtAt] = initSentry.match(/\.setTag\("builtAt",String\("(\d+)"\)\)/);
+    return { buildNumber, builtAt: Number(builtAt) };
 }
 
 async function protectWebpack(webpack, body) {
@@ -87,18 +91,18 @@ class TarFile {
         this.buffers = [];
     }
 
-    addTextFile(name, text) {
-        this.addFile(name, new TextEncoder().encode(text));
+    addTextFile(name, text, metadata) {
+        this.addFile(name, new TextEncoder().encode(text), metadata);
     }
 
-    addFile(name, data) {
+    addFile(name, data, {mtime = 0} = {}) {
         this.buffers.push(this.header([
             [100, name.toString()], // name
             [8, 0o644], // mode
             [8, 0o1000], // uid
             [8, 0o1000], // gid
             [12, data.length], // size
-            [12, 0], // mtime
+            [12, mtime], // mtime
             [8, null], // checksum
             [1, "0"], // type
             [100, ""], // name of linked file (??)
