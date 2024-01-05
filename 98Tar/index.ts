@@ -61,22 +61,42 @@ async function protectWebpack(webpack, body) {
     }
 }
 
-async function forceLoadAll(wreq) {
-    let chunks;
-    const sym = Symbol("forceLoadAll");
-    Object.defineProperty(Object.prototype, sym, {
-        get() { chunks = this; },
-        set() { },
-        configurable: true,
-    });
-    wreq.el(sym);
-    delete Object.prototype[sym];
+function getLoadedChunks(wreq) {
+    let o = wreq.o;
+    try {
+        wreq.o = (a, b) => { throw a };
+        wreq.f.j()
+    } catch(e) {
+        return e;
+    } finally {
+        wreq.o = o;
+    }
+}
 
-    const ids = Object.keys(chunks);
+function getChunkPaths(wreq) {
+    const sym = Symbol("getChunkPaths");
+    try {
+        Object.defineProperty(Object.prototype, sym, {
+            get() { throw this },
+            set() { },
+            configurable: true,
+        });
+        wreq.u(sym);
+    } catch(e) {
+        return e;
+    } finally {
+        delete Object.prototype[sym];
+    }
+}
+
+async function forceLoadAll(wreq) {
+    let chunks = getChunkPaths(wreq);
+    let loaded = getLoadedChunks(wreq);
+    const ids = Object.keys(chunks).filter(id => loaded[id] !== 0);
     let count = 0, errors = 0;
     await Promise.all(ids.map(async id => {
         try {
-            await wreq.el(id);
+            await wreq.e(id);
         } catch(e) {
             logger.error(e);
             errors++;
