@@ -1,5 +1,5 @@
-import definePlugin from "@utils/types";
 import { Logger } from "@utils/Logger";
+import definePlugin from "@utils/types";
 
 import SPEC from "./spec";
 
@@ -21,7 +21,7 @@ export default definePlugin({
             all: true,
             replacement: {
                 match: /\}\}$/,
-                replace: '};$self.register(e.exports)}',
+                replace: "};$self.register(e.exports)}",
             },
             noWarn: true,
         },
@@ -41,7 +41,7 @@ export default definePlugin({
 
     register(module) {
         if(!Object.entries(module)
-            .every(([k, v]) => typeof v == "string" && v.startsWith(k.replaceAll("/", "-") + "_"))
+            .every(([k, v]) => typeof v === "string" && v.startsWith(k.replaceAll("/", "-") + "_"))
         ) {
             logger.debug("skipping", module);
             return;
@@ -51,14 +51,14 @@ export default definePlugin({
 
         let prefix = this.spec.find(spec => this.checkSpec(module, spec))?.name;
         if(prefix === undefined) {
-            let debugClass = `u${this.modules.length}`;
+            const debugClass = `u${this.modules.length}`;
             prefix = `u ${debugClass} ${debugClass}`;
             document.head.appendChild(STYLE);
             STYLE.innerHTML += `.${debugClass}.${debugClass}.${debugClass}.${debugClass} {}\n`;
         }
-        for(let [k, v] of Object.entries(module)) {
-            v = v.split(" ")[0];
-            this.classes[v] = `${prefix}__${k} ${v}`
+        for(const [k, v] of Object.entries(module)) {
+            const v0 = v.split(" ");
+            this.classes[v0] = `${prefix}__${k} ${v0}`;
         }
     },
 
@@ -67,26 +67,25 @@ export default definePlugin({
     },
 
     checkSpec(module, spec) {
-        let exact = false;
         for(const key of spec.include ?? []) {
             if(!Object.hasOwn(module, key)) return false;
         }
         for(const key of spec.exclude ?? []) {
             if(Object.hasOwn(module, key)) return false;
         }
-        if(spec.exact && Object.keys(module).length != spec.include.length) return false;
+        if(spec.exact && Object.keys(module).length !== spec.include.length) return false;
         return true;
     },
 
-    checkConsistency({verbose = false} = {}) {
+    checkConsistency({ verbose = false } = {}) {
         for(const module of this.modules) {
-            let matches = this.spec.filter(spec => this.checkSpec(module, spec));
-            if(matches.length == 0 && verbose) logger.warn("no match for module", module);
+            const matches = this.spec.filter(spec => this.checkSpec(module, spec));
+            if(matches.length === 0 && verbose) logger.warn("no match for module", module);
             if(matches.length > 1) logger.warn("multiple matches for module", module, matches);
         }
         for(const spec of this.spec) {
-            let matches = this.modules.filter(module => this.checkSpec(module, spec));
-            let expected = spec.count === undefined ? 1 : spec.count;
+            const matches = this.modules.filter(module => this.checkSpec(module, spec));
+            const expected = spec.count === undefined ? 1 : spec.count;
             if(expected !== null) {
                 if(matches.length < expected) logger.warn("too few matches for spec", spec, matches);
                 if(matches.length > expected) logger.warn("too many matches for spec", spec, matches);

@@ -1,5 +1,6 @@
-import definePlugin from "@utils/types";
 import { Logger } from "@utils/Logger";
+import definePlugin from "@utils/types";
+
 import TarFile from "./tar";
 
 const logger = new Logger("98Tar", "#CAA698");
@@ -46,11 +47,11 @@ function getBuildNumber() {
 }
 
 async function protectWebpack(webpack, body) {
-    let push = webpack.push.bind(webpack)
-    let webpack_push = Object.getOwnPropertyDescriptor(webpack, "push");
+    const push = webpack.push.bind(webpack);
+    const webpack_push = Object.getOwnPropertyDescriptor(webpack, "push");
     Object.defineProperty(webpack, "push", {
         get: () => push,
-        set() { throw "nested webpack" },
+        set() { throw "nested webpack"; },
         enumerable: true,
         configurable: true,
     });
@@ -63,10 +64,10 @@ async function protectWebpack(webpack, body) {
 }
 
 function getLoadedChunks(wreq) {
-    let o = wreq.o;
+    const { o } = wreq;
     try {
-        wreq.o = (a, b) => { throw a };
-        wreq.f.j()
+        wreq.o = a => { throw a; };
+        wreq.f.j();
     } catch(e) {
         return e;
     } finally {
@@ -78,7 +79,7 @@ function getChunkPaths(wreq) {
     const sym = Symbol("getChunkPaths");
     try {
         Object.defineProperty(Object.prototype, sym, {
-            get() { throw this },
+            get() { throw this; },
             set() { },
             configurable: true,
         });
@@ -91,8 +92,8 @@ function getChunkPaths(wreq) {
 }
 
 async function forceLoadAll(wreq) {
-    let chunks = getChunkPaths(wreq);
-    let loaded = getLoadedChunks(wreq);
+    const chunks = getChunkPaths(wreq);
+    const loaded = getLoadedChunks(wreq);
     const ids = Object.keys(chunks).filter(id => loaded[id] !== 0);
     let count = 0, errors = 0;
     await Promise.all(ids.map(async id => {
@@ -103,6 +104,6 @@ async function forceLoadAll(wreq) {
             errors++;
         }
         count++;
-        logger.log(`Loading webpack chunks... (${count}/${ids.length}${errors == 0 ? "" : `, ${errors} errors`})`)
+        logger.log(`Loading webpack chunks... (${count}/${ids.length}${errors === 0 ? "" : `, ${errors} errors`})`);
     }));
 }

@@ -1,0 +1,6 @@
+{
+    "rules": {
+        "simple-header/header": "off",
+        "no-unused-vars": "warn"
+    }
+}

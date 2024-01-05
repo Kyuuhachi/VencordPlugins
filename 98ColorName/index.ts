@@ -1,8 +1,7 @@
-import definePlugin, { OptionType } from "@utils/types";
 import { definePluginSettings } from "@api/Settings";
-import { makeRange } from "@components/PluginSettings/components";
 import * as Styles from "@api/Styles";
-
+import { makeRange } from "@components/PluginSettings/components";
+import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy } from "@webpack";
 
 const AuthorStore = findByPropsLazy("useNullableMessageAuthor", "useNullableMessageAuthor");
@@ -16,14 +15,14 @@ export const settings = definePluginSettings({
         markers: makeRange(0, 100, 10),
         default: 20,
         onChange() {
-            updateStyle()
+            updateStyle();
         },
     },
 });
 
 function updateStyle() {
     Styles.requireStyle(style).dom.sheet.cssRules[0]
-        .style.setProperty("--98-message-color-saturation", `${settings.store.saturation}`)
+        .style.setProperty("--98-message-color-saturation", `${settings.store.saturation}`);
 }
 
 export default definePlugin({

@@ -7,7 +7,7 @@ export default class TarFile {
         this.addFile(name, new TextEncoder().encode(text), metadata);
     }
 
-    addFile(name, data, {mtime = 0} = {}) {
+    addFile(name, data, { mtime = 0 } = {}) {
         this.buffers.push(this.header([
             [100, name.toString()], // name
             [8, 0o644], // mode
@@ -52,7 +52,7 @@ export default class TarFile {
 
     save(filename) {
         const a = document.createElement("a");
-        a.href = URL.createObjectURL(new Blob(this.buffers, {"type": "application/x-tar"}));
+        a.href = URL.createObjectURL(new Blob(this.buffers, { "type": "application/x-tar" }));
         a.download = filename;
         a.style.display = "none";
         document.body.appendChild(a);
@@ -60,4 +60,4 @@ export default class TarFile {
         document.body.removeChild(a);
         URL.revokeObjectURL(a.href);
     }
-};
+}

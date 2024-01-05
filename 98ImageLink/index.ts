@@ -7,11 +7,11 @@ export default definePlugin({
 
     patches: [
         {
-            find: 'isEmbedInline:function',
+            find: "isEmbedInline:function",
             replacement: {
                 match: /(?<=isEmbedInline:function\(\)\{return )\w+(?=\})/,
-                replace: '()=>false',
+                replace: "()=>false",
             },
         },
     ],
-})
+});

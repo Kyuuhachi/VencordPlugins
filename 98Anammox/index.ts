@@ -1,5 +1,5 @@
-import definePlugin, { OptionType } from "@utils/types";
 import { definePluginSettings } from "@api/Settings";
+import definePlugin, { OptionType } from "@utils/types";
 import { i18n } from "@webpack/common";
 
 export const settings = definePluginSettings({
@@ -35,7 +35,7 @@ export default definePlugin({
             find: 'tutorialId:"direct-messages"',
             replacement: {
                 match: /"premium"\)/,
-                replace: '$&&&undefined',
+                replace: "$&&&undefined",
             },
             predicate: () => settings.store.dms,
         },
@@ -43,33 +43,33 @@ export default definePlugin({
             find: 'tutorialId:"direct-messages"',
             replacement: {
                 match: /"discord-shop"\)/,
-                replace: '$&&&undefined',
+                replace: "$&&&undefined",
             },
             predicate: () => settings.store.dms,
         },
         // Above DMs, keyboard nav
         {
-            find: '.default.hasLibraryApplication()&&!',
+            find: ".default.hasLibraryApplication()&&!",
             replacement: {
                 match: /Routes\.APPLICATION_STORE,/,
-                replace: 'undefined,',
+                replace: "undefined,",
             },
             predicate: () => settings.store.dms,
         },
         {
-            find: '.default.hasLibraryApplication()&&!',
+            find: ".default.hasLibraryApplication()&&!",
             replacement: {
                 match: /Routes\.COLLECTIBLES_SHOP,/,
-                replace: 'undefined,',
+                replace: "undefined,",
             },
             predicate: () => settings.store.dms,
         },
         // Settings, sidebar
         {
-            find: 'Messages.BILLING_SETTINGS',
+            find: "Messages.BILLING_SETTINGS",
             replacement: {
                 match: /return (\w+)\}\}$/,
-                replace: 'return $self.removeBilling($1)}}',
+                replace: "return $self.removeBilling($1)}}",
             },
             predicate: () => settings.store.billing,
         },
@@ -78,7 +78,7 @@ export default definePlugin({
             find: 'Messages.PREMIUM_GIFT_BUTTON_LABEL,"aria-haspopup":"dialog",onClick:',
             replacement: {
                 match: /if\(\w+\)return null;/,
-                replace: 'return null;',
+                replace: "return null;",
             },
             predicate: () => settings.store.gift,
         },
@@ -86,12 +86,12 @@ export default definePlugin({
 
     removeBilling(sidebar) {
         let keep = true;
-        let k = sidebar.filter(v => {
-            if(v.section == "HEADER" && v.label == i18n.Messages.BILLING_SETTINGS) keep = false;
-            let ret = keep;
-            if(v.section == "DIVIDER") keep = true;
+        const k = sidebar.filter(v => {
+            if(v.section === "HEADER" && v.label === i18n.Messages.BILLING_SETTINGS) keep = false;
+            const ret = keep;
+            if(v.section === "DIVIDER") keep = true;
             return ret;
         });
-        return k
+        return k;
     }
-})
+});
