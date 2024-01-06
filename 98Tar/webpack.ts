@@ -1,14 +1,3 @@
-import { Logger } from "@utils/Logger";
-
-const logger = new Logger("98Tar", "#CAA698");
-
-export function getBuildNumber() {
-    const initSentry = Vencord.Webpack.findByProps("initSentry").initSentry.toString();
-    const [, buildNumber] = initSentry.match(/\.setTag\("buildNumber",\(\w+="(\d+)","\1"\)\)/);
-    const [, builtAt] = initSentry.match(/\.setTag\("builtAt",String\("(\d+)"\)\)/);
-    return { buildNumber, builtAt: Number(builtAt) };
-}
-
 export async function protectWebpack(webpack, body) {
     const push = webpack.push.bind(webpack);
     const webpack_push = Object.getOwnPropertyDescriptor(webpack, "push");
@@ -54,20 +43,14 @@ export function getChunkPaths(wreq) {
     }
 }
 
-export async function forceLoadAll(wreq) {
+export async function forceLoadAll(wreq, on_chunk = ()=>{}) {
     const chunks = getChunkPaths(wreq);
     const loaded = getLoadedChunks(wreq);
     const ids = Object.keys(chunks).filter(id => loaded[id] !== 0);
-    let count = 0, errors = 0;
     await Promise.all(ids.map(async id => {
         try {
             await wreq.e(id);
-        } catch(e) {
-            logger.error(e);
-            errors++;
-        }
-        count++;
-        logger.log(`Loading webpack chunks... (${count}/${ids.length}${errors === 0 ? "" : `, ${errors} errors`})`);
+        } catch {}
+        on_chunk(id);
     }));
 }
-
