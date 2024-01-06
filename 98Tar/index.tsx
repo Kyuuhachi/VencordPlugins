@@ -63,10 +63,15 @@ function saveTar(usePatched: bool) {
 function TarModal({ rootProps, close }) {
     const { buildNumber, builtAt } = getBuildNumber();
     const [, rerender] = useState({});
+    const [isLoading, setLoading] = useState(false);
     const paths = Webpack.getChunkPaths(wreq);
-    const loaded = Object.entries(Webpack.getLoadedChunks(wreq))
-        .filter(([k, v]) => wreq.o(paths, k) && (v === 0 || v === undefined));
-    const errored = loaded.filter(([, v]) => v === undefined);
+    const status = Object.entries(Webpack.getLoadedChunks(wreq))
+        .filter(([k]) => wreq.o(paths, k))
+        .map(([, v]) => v);
+    const loading = status.length;
+    const loaded = status.filter(v => v === 0 || v === undefined).length;
+    const errored = status.filter(v => v === undefined).length;
+    const all = Object.keys(paths).length;
     return (
         <ModalRoot {...rootProps}>
             <ModalHeader>
@@ -94,18 +99,19 @@ function TarModal({ rootProps, close }) {
                             variant="text-md/normal"
                             style={{ flexGrow: 1 }}
                         >
-                            {loaded.length}/{Object.keys(paths).length}
-                            {errored.length ? ` (${errored.length} errors)` : null}
+                            {loaded}/{all}
+                            {errored ? ` (${errored} errors)` : null}
                         </Forms.Text>
                         <Button
-                            disabled={loaded.length === Object.keys(paths).length}
+                            disabled={loading === all || isLoading}
                             onClick={async () => {
+                                setLoading(true);
                                 await Webpack.protectWebpack(webpackChunkdiscord_app, async () => {
                                     await Webpack.forceLoadAll(wreq, rerender);
                                 });
                             }}
                         >
-                            Load all
+                            {loaded === all ? "Loaded" : loading === all ? "Loading" : "Load all"}
                         </Button>
                     </Flex>
                 </div>
