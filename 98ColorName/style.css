@@ -1,28 +1,15 @@
 :root {
     --98-message-color-saturation: /*DYNAMIC*/;
-    --98-message-color: var(--text-normal);
 }
 
-@supports (color: color-mix(in lab, red, blue)) {
-    div[class*="messageContent_"] {
-        color: color-mix(
-            in lab,
-            var(--98-message-color) calc(var(--98-message-color-saturation) * 1%),
-            var(--text-normal)
-        )
-    }
+div[class*="messageContent_"] {
+    animation:
+        100s
+        _98-message-color-interpolate
+        paused
+        calc(-1s * var(--98-message-color-saturation))
+        !important;
 }
-
-@supports not (color: color-mix(in lab, red, blue)) {
-    div[class*="messageContent_"] {
-        animation:
-            100s
-            _98-message-color-interpolate
-            paused
-            calc(-1s * var(--98-message-color-saturation))
-            !important;
-    }
-    @keyframes _98-message-color-interpolate {
-        to {color: var(--98-message-color)}
-    }
+@keyframes _98-message-color-interpolate {
+    to {color: var(--98-message-color)}
 }
