@@ -57,7 +57,7 @@ export default definePlugin({
             STYLE.innerHTML += `.${debugClass}.${debugClass}.${debugClass}.${debugClass} {}\n`;
         }
         for(const [k, v] of Object.entries(module)) {
-            const v0 = v.split(" ");
+            const v0 = v.split(" ")[0];
             this.classes[v0] = `${prefix}__${k} ${v0}`;
         }
     },
