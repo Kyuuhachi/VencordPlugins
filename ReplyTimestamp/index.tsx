@@ -1,11 +1,16 @@
 import "./style.css";
 
-import { definePluginSettings } from "@api/Settings";
-import definePlugin, { OptionType } from "@utils/types";
+import definePlugin from "@utils/types";
 import { findByPropsLazy } from "@webpack";
 import { Timestamp } from "@webpack/common";
 
 const MessageIds = findByPropsLazy("getMessageTimestampId");
+const DateUtils = findByPropsLazy("calendarFormat", "dateFormat", "isSameDay", "accessibilityLabelCalendarFormat");
+const MessageClasses = findByPropsLazy("separator", "latin24CompactTimeStamp");
+
+function Sep(props) {
+    return <i className={MessageClasses.separator} aria-hidden={true} {...props} />;
+}
 
 export default definePlugin({
     name: "Reply Timestamp",
@@ -22,7 +27,7 @@ export default definePlugin({
         }
     ],
 
-    ReplyTimestamp({referencedMessage, baseMessage}) {
+    ReplyTimestamp({ referencedMessage, baseMessage }) {
         if(referencedMessage.state === 0) {
             const refTimestamp = referencedMessage.message.timestamp;
             const baseTimestamp = baseMessage.timestamp;
@@ -32,7 +37,14 @@ export default definePlugin({
                 compact={refTimestamp.isSame(baseTimestamp, "date")}
                 timestamp={refTimestamp}
                 isInline={false}
-            />;
+            >
+                <Sep>[</Sep>
+                { DateUtils.isSameDay(refTimestamp, baseTimestamp)
+                    ? DateUtils.dateFormat(refTimestamp, "LT")
+                    : DateUtils.calendarFormat(refTimestamp)
+                }
+                <Sep>]</Sep>
+            </Timestamp>;
         }
     },
 });
