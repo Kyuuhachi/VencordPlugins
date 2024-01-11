@@ -10,6 +10,10 @@ const PLUGINS = [
     require("./WebpackTarball").default,
 ];
 
+for(const plugin of PLUGINS) {
+    (plugin.tags ??= []).push("Kyuuhachi");
+}
+
 const name = Symbol("98VencordPlugins");
 export default { name };
 
