@@ -3,7 +3,7 @@ import definePlugin from "@utils/types";
 
 import SPEC from "./spec";
 
-const logger = new Logger("98Classify", "#CAA698");
+const logger = new Logger("Classify", "#CAA698");
 
 const STYLE = document.createElement("style");
 STYLE.id = "_98classify";

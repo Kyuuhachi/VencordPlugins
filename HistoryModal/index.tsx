@@ -16,7 +16,7 @@ const cl = classNameFactory("c98-history-");
 let old_renderEdit;
 
 export default definePlugin({
-    name: "98HistoryModal",
+    name: "HistoryModal",
     description: "Shows edit history in a modal, instead of inline",
     authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
 

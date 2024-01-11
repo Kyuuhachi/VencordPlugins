@@ -1,7 +1,7 @@
 import definePlugin from "@utils/types";
 
 export default definePlugin({
-    name: "98ImageLink",
+    name: "ImageLink",
     description: "Suppresses the hiding of links for \"simple embeds\"",
     authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
 

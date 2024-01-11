@@ -26,7 +26,7 @@ function updateStyle() {
 }
 
 export default definePlugin({
-    name: "98ColorText",
+    name: "ColorMessage",
     description: "Colors message content with author's role color",
     authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
     settings,

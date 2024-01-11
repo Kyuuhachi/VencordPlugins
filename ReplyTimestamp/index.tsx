@@ -13,7 +13,7 @@ function Sep(props) {
 }
 
 export default definePlugin({
-    name: "Reply Timestamp",
+    name: "ReplyTimestamp",
     description: "Shows a timestamp on replied-message previews",
     authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
 
