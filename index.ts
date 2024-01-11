@@ -1,13 +1,13 @@
 import Plugins from "~plugins";
 
 const PLUGINS = [
-    require("./98Anammox").default,
-    require("./98Classify").default,
-    require("./98ColorName").default,
-    require("./98HistoryModal").default,
-    require("./98ImageLink").default,
-    require("./98Tar").default,
+    require("./Anammox").default,
+    require("./Classify").default,
+    require("./ColorMessage").default,
+    require("./HistoryModal").default,
+    require("./ImageLink").default,
     require("./ReplyTimestamp").default,
+    require("./WebpackTarball").default,
 ];
 
 const name = Symbol("98VencordPlugins");
