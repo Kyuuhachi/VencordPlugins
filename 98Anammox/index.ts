@@ -9,12 +9,6 @@ export const settings = definePluginSettings({
         description: "Remove shops above DMs list",
         restartNeeded: true,
     },
-    billing: {
-        type: OptionType.BOOLEAN,
-        default: true,
-        description: "Remove billing settings",
-        restartNeeded: true,
-    },
     gift: {
         type: OptionType.BOOLEAN,
         default: true,
@@ -64,16 +58,6 @@ export default definePlugin({
             },
             predicate: () => settings.store.dms,
         },
-        // Settings, sidebar
-        {
-            find: "Messages.BILLING_SETTINGS",
-            replacement: {
-                match: /return (\w+)\}\}$/,
-                replace: "return $self.removeBilling($1)}}",
-            },
-            predicate: () => settings.store.billing,
-        },
-        // Gift button
         {
             find: 'Messages.PREMIUM_GIFT_BUTTON_LABEL,"aria-haspopup":"dialog",onClick:',
             replacement: {
@@ -83,15 +67,4 @@ export default definePlugin({
             predicate: () => settings.store.gift,
         },
     ],
-
-    removeBilling(sidebar) {
-        let keep = true;
-        const k = sidebar.filter(v => {
-            if(v.section === "HEADER" && v.label === i18n.Messages.BILLING_SETTINGS) keep = false;
-            const ret = keep;
-            if(v.section === "DIVIDER") keep = true;
-            return ret;
-        });
-        return k;
-    }
 });
