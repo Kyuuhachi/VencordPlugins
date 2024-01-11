@@ -42,7 +42,7 @@ export default definePlugin({
     ],
 
     getMessageColor(message) {
-        return AuthorStore.default(message).colorString ?? "var(--text-normal)";
+        return AuthorStore.default(message).colorString;
     },
 
     start() {
