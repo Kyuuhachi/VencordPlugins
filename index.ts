@@ -9,6 +9,7 @@ const PLUGINS = [
     require("./ImageLink").default,
     require("./ReplyTimestamp").default,
     require("./WebpackTarball").default,
+    require("./Title").default,
 ];
 
 for(const plugin of PLUGINS) {
