@@ -33,35 +33,31 @@ export default definePlugin({
         // Above DMs, mouse nav
         {
             find: 'tutorialId:"direct-messages"',
-            replacement: {
-                match: /"premium"\)/,
-                replace: "$&&&undefined",
-            },
-            predicate: () => settings.store.dms,
-        },
-        {
-            find: 'tutorialId:"direct-messages"',
-            replacement: {
-                match: /"discord-shop"\)/,
-                replace: "$&&&undefined",
-            },
+            replacement: [
+                {
+                    match: /"premium"\)/,
+                    replace: "$&&&undefined",
+                },
+                {
+                    match: /"discord-shop"\)/,
+                    replace: "$&&&undefined",
+                },
+            ],
             predicate: () => settings.store.dms,
         },
         // Above DMs, keyboard nav
         {
             find: ".default.hasLibraryApplication()&&!",
-            replacement: {
-                match: /Routes\.APPLICATION_STORE,/,
-                replace: "undefined,",
-            },
-            predicate: () => settings.store.dms,
-        },
-        {
-            find: ".default.hasLibraryApplication()&&!",
-            replacement: {
-                match: /Routes\.COLLECTIBLES_SHOP,/,
-                replace: "undefined,",
-            },
+            replacement: [
+                {
+                    match: /Routes\.APPLICATION_STORE,/,
+                    replace: "undefined,",
+                },
+                {
+                    match: /Routes\.COLLECTIBLES_SHOP,/,
+                    replace: "undefined,",
+                },
+            ],
             predicate: () => settings.store.dms,
         },
         // Settings, sidebar
