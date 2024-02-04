@@ -4,6 +4,20 @@ Several patches to speed up the loading of the main settings menu:
 - Remove another animation for fading in the menu contents (why do they have two).
 - Eagerly load the menu contents; without this the first time has an extra delay.
 
+## Requirements
+
+- in src\webpack\common\components.ts at line 29 add the code below.
+
+```
+FocusLock: t.FocusLock,
+```
+
+- in src\webpack\common\types\components.d.ts at line 38 add the code below.
+
+```
+export type FocusLock = ComponentType<FocusLock>;
+```
+
 ### A note on themes
 
 If you use a theme like *Modal settings window*, this plugin interferes with

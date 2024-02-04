@@ -1,3 +1,9 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2023 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 import { definePluginSettings } from "@api/Settings";
 import { classNameFactory } from "@api/Styles";
 import definePlugin, { OptionType } from "@utils/types";
@@ -18,9 +24,9 @@ const settings = definePluginSettings({
     },
 });
 
-const lazyLayers = [];
+const lazyLayers: any[] = [];
 function eagerLoad() {
-    lazyLayers.forEach(wreq.el);
+    lazyLayers.forEach((wreq as any).el);
 }
 
 export default definePlugin({
@@ -55,7 +61,7 @@ export default definePlugin({
 
     Layer({ mode, baseLayer = false, ...props }) {
         const hidden = mode === "HIDDEN";
-        const containerRef = useRef();
+        const containerRef = useRef<HTMLDivElement | null>(null);
         const node = <div
             ref={containerRef}
             aria-hidden={hidden}
