@@ -2,7 +2,7 @@ import { definePluginSettings } from "@api/Settings";
 import { classNameFactory } from "@api/Styles";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy, wreq } from "@webpack";
-import { Forms, useRef } from "@webpack/common";
+import { ComponentDispatch,Forms, useEffect, useRef } from "@webpack/common";
 
 const cl = classNameFactory("");
 const Classes = findByPropsLazy("animating", "baseLayer", "bg", "layer", "layers");
@@ -56,6 +56,10 @@ export default definePlugin({
     Layer({ mode, baseLayer = false, ...props }) {
         const hidden = mode === "HIDDEN";
         const containerRef = useRef();
+        useEffect(() => () => {
+            ComponentDispatch.dispatch("LAYER_POP_START");
+            ComponentDispatch.dispatch("LAYER_POP_COMPLETE");
+        }, []);
         const node = <div
             ref={containerRef}
             aria-hidden={hidden}
