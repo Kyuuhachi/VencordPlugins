@@ -26,7 +26,7 @@ export default definePlugin({
         async "Webpack Tarball"() {
             const key = openModal(props => (
                 <TarModal
-                    rootProps={props}
+                    modalProps={props}
                     close={() => closeModal(key)}
                 />
             ));
@@ -60,7 +60,7 @@ function saveTar(usePatched: bool) {
     tar.save(`${root}.tar`);
 }
 
-function TarModal({ rootProps, close }) {
+function TarModal({ modalProps, close }) {
     const { buildNumber, builtAt } = getBuildNumber();
     const [, rerender] = useState({});
     const [isLoading, setLoading] = useState(false);
@@ -73,7 +73,7 @@ function TarModal({ rootProps, close }) {
     const errored = status.filter(v => v === undefined).length;
     const all = Object.keys(paths).length;
     return (
-        <ModalRoot {...rootProps}>
+        <ModalRoot {...modalProps}>
             <ModalHeader>
                 <Flex.Child>
                     <Forms.Heading variant="heading-lg/semibold">

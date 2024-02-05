@@ -55,23 +55,25 @@ export default definePlugin({
 function showHistory(message) {
     const key = openModal(props =>
         <ErrorBoundary>
-            <ModalRoot {...props} size={ModalSize.LARGE}>
-                <HistoryModal key={key} message={message} />
-            </ModalRoot>
+            <HistoryModal
+                modalProps={props}
+                close={() => closeModal(key)}
+                message={message}
+            />
         </ErrorBoundary>
     );
 }
 
-function HistoryModal({ key, message }) {
+function HistoryModal({ modalProps, close, message }) {
     const [selected, selectItem] = useState(message.editHistory.length);
     // TODO the first timestamp is not necessarily correct, I want some way to store the oldest known edited-timestamp
     const timestamps = [message.timestamp, ...message.editHistory.map(a => a.timestamp)];
     const contents = [...message.editHistory.map(a => a.content), message.content];
 
-    return <>
+    return <ModalRoot {...modalProps} size={ModalSize.LARGE}>
         <ModalHeader className={cl("modal-head")}>
             <Text variant="heading-lg/semibold">Message edit history</Text>
-            <ModalCloseButton onClick={() => closeModal(key)} />
+            <ModalCloseButton onClick={close} />
             <div className={cl("revisions")}>
                 {...timestamps.map((timestamp, index) =>
                     <button
@@ -97,5 +99,5 @@ function HistoryModal({ key, message }) {
                 </div>
             )}
         </ModalContent>
-    </>;
+    </ModalRoot>;
 }
