@@ -3,12 +3,14 @@ import "./style.css";
 import definePlugin from "@utils/types";
 import { findByPropsLazy } from "@webpack";
 import { Timestamp } from "@webpack/common";
+import { Message } from "discord-types/general";
+import { HTMLAttributes } from "react";
 
 const MessageIds = findByPropsLazy("getMessageTimestampId");
 const DateUtils = findByPropsLazy("calendarFormat", "dateFormat", "isSameDay", "accessibilityLabelCalendarFormat");
 const MessageClasses = findByPropsLazy("separator", "latin24CompactTimeStamp");
 
-function Sep(props) {
+function Sep(props: HTMLAttributes<HTMLElement>) {
     return <i className={MessageClasses.separator} aria-hidden={true} {...props} />;
 }
 
@@ -27,9 +29,15 @@ export default definePlugin({
         }
     ],
 
-    ReplyTimestamp({ referencedMessage, baseMessage }) {
+    ReplyTimestamp({
+        referencedMessage,
+        baseMessage,
+    }: {
+        referencedMessage: { state: number, message?: Message },
+        baseMessage: Message;
+    }) {
         if(referencedMessage.state === 0) {
-            const refTimestamp = referencedMessage.message.timestamp;
+            const refTimestamp = referencedMessage.message!.timestamp;
             const baseTimestamp = baseMessage.timestamp;
             return <Timestamp
                 id={MessageIds.getMessageTimestampId(referencedMessage.message)}

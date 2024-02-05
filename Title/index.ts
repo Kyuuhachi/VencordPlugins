@@ -3,7 +3,7 @@ import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy } from "@webpack";
 
 const TitleManager = findByPropsLazy("setPageTitleNotificationCount", "flashPageTitle");
-const rootTitle = { base: undefined };
+const rootTitle = { base: null as string | null };
 
 export const settings = definePluginSettings({
     title: {
@@ -14,10 +14,10 @@ export const settings = definePluginSettings({
     },
 });
 
-function setTitle(v) {
+function setTitle(v: string) {
     rootTitle.base = v || null;
     console.log("fooobar", rootTitle);
-    TitleManager.flashPageTitle({messages: 0})();
+    TitleManager.flashPageTitle({ messages: 0 })();
 }
 
 export default definePlugin({

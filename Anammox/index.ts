@@ -80,7 +80,7 @@ export default definePlugin({
         },
     ],
 
-    removeBilling(sidebar) {
+    removeBilling(sidebar: { section: string, label: string }[]) {
         let keep = true;
         const k = sidebar.filter(v => {
             if(v.section === "HEADER" && v.label === i18n.Messages.BILLING_SETTINGS) keep = false;

@@ -1,7 +1,16 @@
 import { Logger } from "@utils/Logger";
 import definePlugin from "@utils/types";
 
-import SPEC from "./spec";
+type Spec = {
+    name: string;
+    count?: number | null;
+    include?: string[];
+    exclude?: string[];
+    exact?: boolean;
+};
+
+import _SPEC from "./spec.json";
+const SPEC: Spec[] = _SPEC;
 
 const logger = new Logger("Classify", "#CAA698");
 
@@ -36,10 +45,10 @@ export default definePlugin({
     ],
 
     spec: SPEC,
-    classes: {},
-    modules: [],
+    classes: {} as { [className: string]: string },
+    modules: [] as object[],
 
-    register(module) {
+    register(module: object) {
         if(!Object.entries(module)
             .every(([k, v]) => typeof v === "string" && v.startsWith(k.replaceAll("/", "-") + "_"))
         ) {
@@ -62,18 +71,18 @@ export default definePlugin({
         }
     },
 
-    remap(className) {
+    remap(className: string) {
         return className.split(" ").map(c => this.classes[c] ?? c).join("\n");
     },
 
-    checkSpec(module, spec) {
+    checkSpec(module: object, spec: Spec) {
         for(const key of spec.include ?? []) {
             if(!Object.hasOwn(module, key)) return false;
         }
         for(const key of spec.exclude ?? []) {
             if(Object.hasOwn(module, key)) return false;
         }
-        if(spec.exact && Object.keys(module).length !== spec.include.length) return false;
+        if(spec.exact && Object.keys(module).length !== spec.include!.length) return false;
         return true;
     },
 

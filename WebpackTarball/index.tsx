@@ -1,5 +1,5 @@
 import { definePluginSettings } from "@api/Settings";
-import { closeModal, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalRoot, openModal } from "@utils/modal";
+import { closeModal, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalProps, ModalRoot, openModal } from "@utils/modal";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByProps,wreq } from "@webpack";
 import { Button, Flex, Forms, moment, Timestamp, useState } from "@webpack/common";
@@ -41,11 +41,12 @@ export function getBuildNumber() {
     return { buildNumber, builtAt: Number(builtAt) };
 }
 
-function saveTar(usePatched: bool) {
+function saveTar(usePatched: boolean) {
     const tar = new TarFile();
     const { buildNumber, builtAt } = getBuildNumber();
     const mtime = (builtAt/1000)|0;
-    const modules = Object.assign({}, ...webpackChunkdiscord_app.map(a => a[1]));
+    const webpack = window.webpackChunkdiscord_app as any[];
+    const modules: { [id: string]: any } = Object.assign({}, ...webpack.map(a => a[1]));
 
     const root = usePatched ? `vencord-${buildNumber}` : `discord-${buildNumber}`;
 
@@ -60,7 +61,7 @@ function saveTar(usePatched: bool) {
     tar.save(`${root}.tar`);
 }
 
-function TarModal({ modalProps, close }) {
+function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void; }) {
     const { buildNumber, builtAt } = getBuildNumber();
     const [, rerender] = useState({});
     const [isLoading, setLoading] = useState(false);
@@ -106,7 +107,7 @@ function TarModal({ modalProps, close }) {
                             disabled={loading === all || isLoading}
                             onClick={async () => {
                                 setLoading(true);
-                                await Webpack.protectWebpack(webpackChunkdiscord_app, async () => {
+                                await Webpack.protectWebpack(window.webpackChunkdiscord_app as any[], async () => {
                                     await Webpack.forceLoadAll(wreq, rerender);
                                 });
                             }}
@@ -118,7 +119,7 @@ function TarModal({ modalProps, close }) {
 
                 <Forms.FormSwitch
                     value={settings.use(["usePatched"]).usePatched}
-                    onChange={v => settings.store.usePatched = v}
+                    onChange={(v: boolean) => settings.store.usePatched = v}
                     hideBorder
                 >
                     {settings.def.usePatched.description}

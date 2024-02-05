@@ -21,7 +21,7 @@ export const settings = definePluginSettings({
 });
 
 function updateStyle() {
-    Styles.requireStyle(style).dom.sheet.cssRules[0]
+    (Styles.requireStyle(style).dom!.sheet!.cssRules[0] as CSSStyleRule)
         .style.setProperty("--98-message-color-saturation", `${settings.store.saturation}`);
 }
 
@@ -41,8 +41,8 @@ export default definePlugin({
         },
     ],
 
-    getMessageColor(message) {
-        return AuthorStore.default(message).colorString;
+    getMessageColor(messageId: string) {
+        return AuthorStore.default(messageId).colorString;
     },
 
     start() {

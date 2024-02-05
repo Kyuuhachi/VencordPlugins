@@ -1,6 +1,8 @@
-export async function protectWebpack(webpack, body) {
+import type { WebpackInstance } from "discord-types/other";
+
+export async function protectWebpack<T>(webpack: any[], body: () => Promise<T>): Promise<T> {
     const push = webpack.push.bind(webpack);
-    const webpack_push = Object.getOwnPropertyDescriptor(webpack, "push");
+    const webpack_push = Object.getOwnPropertyDescriptor(webpack, "push")!;
     Object.defineProperty(webpack, "push", {
         get: () => push,
         set() { throw "nested webpack"; },
@@ -15,19 +17,20 @@ export async function protectWebpack(webpack, body) {
     }
 }
 
-export function getLoadedChunks(wreq) {
+export function getLoadedChunks(wreq: WebpackInstance): { [chunkId: string | symbol]: 0 | undefined } {
     const { o } = wreq;
     try {
-        wreq.o = a => { throw a; };
+        wreq.o = (a: any) => { throw a; };
         wreq.f.j();
-    } catch(e) {
+    } catch(e: any) {
         return e;
     } finally {
         wreq.o = o;
     }
+    throw new Error("getLoadedChunks failed");
 }
 
-export function getChunkPaths(wreq) {
+export function getChunkPaths(wreq: WebpackInstance): { [chunkId: string]: string } {
     const sym = Symbol("getChunkPaths");
     try {
         Object.defineProperty(Object.prototype, sym, {
@@ -36,14 +39,16 @@ export function getChunkPaths(wreq) {
             configurable: true,
         });
         wreq.u(sym);
-    } catch(e) {
+    } catch(e: any) {
         return e;
     } finally {
+        // @ts-ignore
         delete Object.prototype[sym];
     }
+    throw new Error("getChunkPaths failed");
 }
 
-export async function forceLoadAll(wreq, on_chunk = ()=>{}) {
+export async function forceLoadAll(wreq: WebpackInstance, on_chunk = (id: string) => {}) {
     const chunks = getChunkPaths(wreq);
     const loaded = getLoadedChunks(wreq);
     const ids = Object.keys(chunks).filter(id => loaded[id] !== 0);

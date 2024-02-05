@@ -2,18 +2,21 @@ import "./styles.css";
 
 import { classNameFactory } from "@api/Styles";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { closeModal, ModalCloseButton, ModalContent, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
+import { closeModal, ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
 import { findByPropsLazy } from "@webpack";
 import { Parser, Text, Timestamp, useState } from "@webpack/common";
+import { Message as _Message } from "discord-types/general";
+import { HTMLAttributes } from "react";
+
+type Message = _Message & { editHistory: { timestamp: any, content: string }[] };
 
 const CodeContainerClasses = findByPropsLazy("markup", "codeContainer");
 const MiscClasses = findByPropsLazy("messageContent", "markupRtl");
-// findByPropsLazy("getElementFromMessage", "ThreadStarterChatMessage").default
 
 const cl = classNameFactory("c98-history-");
 
-let old_renderEdit;
+let old_renderEdit: Function;
 
 export default definePlugin({
     name: "HistoryModal",
@@ -34,8 +37,8 @@ export default definePlugin({
         },
     ],
 
-    EditMarker({ message, ...props }) {
-        const child = VencordCreateElement("span", props);
+    EditMarker({ message, ...props }: { message: Message } & HTMLAttributes<HTMLElement>) {
+        const child = <span {...props} />;
         return <span
             className={cl("history")}
             onClick={() => showHistory(message)}
@@ -43,16 +46,17 @@ export default definePlugin({
     },
 
     start() {
-        const ML = Vencord.Plugins.plugins.MessageLogger;
+        const ML = Vencord.Plugins.plugins.MessageLogger as any;
         old_renderEdit = ML.renderEdit;
         ML.renderEdit = () => {};
     },
     stop() {
+        const ML = Vencord.Plugins.plugins.MessageLogger as any;
         ML.renderEdit = old_renderEdit;
     },
 });
 
-function showHistory(message) {
+function showHistory(message: Message) {
     const key = openModal(props =>
         <ErrorBoundary>
             <HistoryModal
@@ -64,7 +68,7 @@ function showHistory(message) {
     );
 }
 
-function HistoryModal({ modalProps, close, message }) {
+function HistoryModal({ modalProps, close, message }: { modalProps: ModalProps; close(): void; message: Message }) {
     const [selected, selectItem] = useState(message.editHistory.length);
     // TODO the first timestamp is not necessarily correct, I want some way to store the oldest known edited-timestamp
     const timestamps = [message.timestamp, ...message.editHistory.map(a => a.timestamp)];
