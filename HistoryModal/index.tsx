@@ -37,7 +37,7 @@ export default definePlugin({
     EditMarker({ message, ...props }) {
         const child = VencordCreateElement("span", props);
         return <span
-            class={cl("history")}
+            className={cl("history")}
             onClick={() => showHistory(message)}
         >{child}</span>;
     },
