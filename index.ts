@@ -7,7 +7,6 @@ const PLUGINS = [
     require("./FastMenu").default,
     require("./HistoryModal").default,
     require("./ImageLink").default,
-    require("./MemberSort").default,
     require("./ReplyTimestamp").default,
     require("./Title").default,
     require("./WebpackTarball").default,
