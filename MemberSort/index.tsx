@@ -161,7 +161,7 @@ function compareBy<T>(key: (v: T) => any, descending?: boolean): (a: T, b: T) =>
 function getSortKey(user: User, channel: Channel, mode: Mode): any {
     let discordJoin = SnowflakeUtils.extractTimestamp(user.id);
     let member = GuildMemberStore.getMember(user.id, channel.guild_id);
-    let nick = AuthorStore.getUserAuthor(user, channel).nick;
+    let nick = AuthorStore.getUserAuthor(user, channel).nick.toLowerCase();
     let username = [ user.username, user.discriminator ];
     switch(mode) {
         case Mode.NICKNAME: return [ nick, username ];
