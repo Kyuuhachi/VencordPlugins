@@ -3,6 +3,7 @@ import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy, findStoreLazy } from "@webpack";
 import { UserStore, SnowflakeUtils, GuildMemberStore } from "@webpack/common";
 import { User, Channel } from "discord-types/general";
+import { ComponentType } from "react"
 
 const AuthorStore = findByPropsLazy("useNullableMessageAuthor", "useNullableMessageAuthor");
 const ChannelMemberStore = findStoreLazy("ChannelMemberStore");
@@ -48,10 +49,20 @@ export default definePlugin({
     patches: [
         {
             find: "Messages.MEMBERS_LIST_LANDMARK_LABEL",
-            replacement: {
-                match: /(?<=render\(\){)(?=let\{groups:)/,
-                replace: "$self.guildList(this.props);",
-            },
+            replacement: [
+                {
+                    match: /(?<=render\(\){)(?=let\{groups:)/,
+                    replace: "$self.guildList(this.props);",
+                },
+                {
+                    match: /(?<=ListNavigatorProvider,\{navigator:\w+,children:\(0,\w+\.jsx\)\()\w+(?=,)/,
+                    replace: "$self.wrapGuildList($&)",
+                },
+                {
+                    match: /\|\|(\w+)\.groups\.length!==this\.\props\.groups.length/,
+                    replace: "$&||$1._98_mode!=this.props._98_mode||$1._98_descending!=this.props._98_descending",
+                },
+            ],
         },
         {
             find: "Messages.MEMBER_LIST_PRIVATE_THREAD_INSTRUCTIONS",
@@ -79,18 +90,20 @@ export default definePlugin({
         rows: { user: User }[];
         groups: { index: number; count: number }[];
     }) {
-        let { mode, descending } = settings.store;//use(["mode", "descending"]);
+        let { mode, descending } = settings.store;
         props.rows = props.rows.slice();
         for(const group of props.groups) {
-            sortRange(
-                props.rows,
-                group.index+1,
-                group.count,
-                compareBy(
-                    (row: {user: User}) => getSortKey(row.user, props.channel, mode),
-                    descending,
-                ),
-            );
+            sortRange(props.rows, group.index+1, group.count, compareBy(
+                (row: {user: User}) => getSortKey(row.user, props.channel, mode),
+                descending,
+            ));
+        }
+    },
+
+    wrapGuildList(Wrapped: ComponentType<any>) {
+        return (props: object) => {
+            let { mode, descending } = settings.use(["mode", "descending"]);
+            return <Wrapped {...props} _98_mode={mode} _98_descending={descending} />;
         }
     },
 

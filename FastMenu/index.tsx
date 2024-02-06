@@ -2,7 +2,7 @@ import { definePluginSettings } from "@api/Settings";
 import { classNameFactory } from "@api/Styles";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy, wreq } from "@webpack";
-import { ComponentDispatch,Forms, useEffect, useRef } from "@webpack/common";
+import { ComponentDispatch, Forms, useEffect, useRef } from "@webpack/common";
 import { HTMLAttributes } from "react";
 
 const cl = classNameFactory("");
