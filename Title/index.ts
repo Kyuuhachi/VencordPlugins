@@ -16,7 +16,6 @@ export const settings = definePluginSettings({
 
 function setTitle(v: string) {
     rootTitle.base = v || null;
-    console.log("fooobar", rootTitle);
     TitleManager.flashPageTitle({ messages: 0 })();
 }
 
