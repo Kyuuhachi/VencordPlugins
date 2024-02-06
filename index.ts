@@ -7,9 +7,10 @@ const PLUGINS = [
     require("./FastMenu").default,
     require("./HistoryModal").default,
     require("./ImageLink").default,
+    require("./MemberSort").default,
     require("./ReplyTimestamp").default,
-    require("./WebpackTarball").default,
     require("./Title").default,
+    require("./WebpackTarball").default,
 ];
 
 for(const plugin of PLUGINS) {
