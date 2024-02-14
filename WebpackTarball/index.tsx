@@ -2,7 +2,7 @@ import { definePluginSettings } from "@api/Settings";
 import { closeModal, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalProps, ModalRoot, openModal } from "@utils/modal";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByProps,wreq } from "@webpack";
-import { Button, Flex, Forms, moment, Timestamp, useState } from "@webpack/common";
+import { Button, Flex, Forms, Timestamp, useState } from "@webpack/common";
 
 import TarFile from "./tar";
 import * as Webpack from "./webpack";
@@ -81,7 +81,7 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
                         Webpack Tarball
                     </Forms.Heading>
                     <Forms.Text variant="text-md/normal">
-                        <Timestamp timestamp={moment(builtAt)} isInline={false}>
+                        <Timestamp timestamp={new Date(builtAt)} isInline={false}>
                             {"Build number "}
                             {buildNumber}
                         </Timestamp>

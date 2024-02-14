@@ -42,7 +42,7 @@ export default definePlugin({
             return <Timestamp
                 id={MessageIds.getMessageTimestampId(referencedMessage.message)}
                 className="c98-reply-timestamp"
-                compact={refTimestamp.isSame(baseTimestamp, "date")}
+                compact={DateUtils.isSameDay(refTimestamp, baseTimestamp)}
                 timestamp={refTimestamp}
                 isInline={false}
             >
