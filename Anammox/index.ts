@@ -78,6 +78,14 @@ export default definePlugin({
             },
             predicate: () => settings.store.gift,
         },
+        {
+            find: 'Messages.MUTUAL_GUILDS_COUNT',
+            replacement: {
+                match: /\(0,\w+\.jsx\)\("div",\{className:\w+\.giftButtonContainer/,
+                replace: "false&&$&",
+            },
+            predicate: () => settings.store.gift,
+        },
     ],
 
     removeBilling(sidebar: { section: string, label: string }[]) {
