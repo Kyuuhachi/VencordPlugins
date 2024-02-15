@@ -8,6 +8,7 @@ const PLUGINS = [
     require("./HistoryModal").default,
     require("./ImageLink").default,
     require("./ReplyTimestamp").default,
+    require("./SettingsCog").default,
     require("./Title").default,
     require("./WebpackTarball").default,
 ];
