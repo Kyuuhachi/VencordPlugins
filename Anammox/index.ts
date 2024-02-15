@@ -21,6 +21,12 @@ export const settings = definePluginSettings({
         description: "Remove gift button",
         restartNeeded: true,
     },
+    emojiList: {
+        type: OptionType.BOOLEAN,
+        default: true,
+        description: "Remove unavailable categories from the emoji picker",
+        restartNeeded: true,
+    },
 });
 
 export default definePlugin({
@@ -82,6 +88,22 @@ export default definePlugin({
             },
             predicate: () => settings.store.gift,
         },
+        { // Emoji list
+            find: "useEmojiGrid:function()",
+            replacement: {
+                match: /(\w+)=\w+.default.isEmojiCategoryNitroLocked\(\{[^}]*\}\);/,
+                replace: "$&$1||"
+            },
+            predicate: () => settings.store.emojiList,
+        },
+        { // Emoji category list
+            find: ".Messages.EMOJI_PICKER_SCROLL_TO_UNICODE_A11Y_LABEL",
+            replacement: {
+                match: /(\w+)=\(0,\w+.useCategoryNitroLockedStates\)\(\w+,\w+,(\w+)\)/,
+                replace: "$&,__98=($2=$2.filter((_,$2)=>!$1[$2]))"
+            },
+            predicate: () => settings.store.emojiList,
+        }
     ],
 
     removeBilling(sidebar: { section: string, label: string }[]) {
