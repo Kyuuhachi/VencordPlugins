@@ -30,8 +30,7 @@ export default definePlugin({
     settings,
 
     patches: [
-        // Above DMs, mouse nav
-        {
+        { // Above DMs, mouse nav
             find: 'tutorialId:"direct-messages"',
             replacement: [
                 {
@@ -45,8 +44,7 @@ export default definePlugin({
             ],
             predicate: () => settings.store.dms,
         },
-        // Above DMs, keyboard nav
-        {
+        { // Above DMs, keyboard nav
             find: ".default.hasLibraryApplication()&&!",
             replacement: [
                 {
@@ -60,8 +58,7 @@ export default definePlugin({
             ],
             predicate: () => settings.store.dms,
         },
-        // Settings, sidebar
-        {
+        { // Settings, sidebar
             find: "Messages.BILLING_SETTINGS",
             replacement: {
                 match: /return (\w+)\}\}$/,
@@ -69,8 +66,7 @@ export default definePlugin({
             },
             predicate: () => settings.store.billing,
         },
-        // Gift button
-        {
+        { // Gift button
             find: 'Messages.PREMIUM_GIFT_BUTTON_LABEL,"aria-haspopup":"dialog",onClick:',
             replacement: {
                 match: /if\(\w+\)return null;/,
@@ -78,8 +74,8 @@ export default definePlugin({
             },
             predicate: () => settings.store.gift,
         },
-        {
-            find: 'Messages.MUTUAL_GUILDS_COUNT',
+        { // Gift button in DM profile sidebar
+            find: "Messages.MUTUAL_GUILDS_COUNT",
             replacement: {
                 match: /\(0,\w+\.jsx\)\("div",\{className:\w+\.giftButtonContainer/,
                 replace: "false&&$&",
@@ -90,12 +86,11 @@ export default definePlugin({
 
     removeBilling(sidebar: { section: string, label: string }[]) {
         let keep = true;
-        const k = sidebar.filter(v => {
+        return sidebar.filter(v => {
             if(v.section === "HEADER" && v.label === i18n.Messages.BILLING_SETTINGS) keep = false;
             const ret = keep;
             if(v.section === "DIVIDER") keep = true;
             return ret;
         });
-        return k;
-    }
+    },
 });
