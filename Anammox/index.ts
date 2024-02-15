@@ -1,6 +1,5 @@
 import { definePluginSettings } from "@api/Settings";
 import definePlugin, { OptionType } from "@utils/types";
-import { i18n } from "@webpack/common";
 
 export const settings = definePluginSettings({
     dms: {
@@ -66,10 +65,10 @@ export default definePlugin({
         },
         { // Settings, sidebar
             find: "Messages.BILLING_SETTINGS",
-			replacement: {
-				match: /\{section:\i\.SectionTypes\.HEADER,label:\i\.default\.Messages\.BILLING_SETTINGS\},.*?\{section:\i\.SectionTypes\.DIVIDER\},/,
-				replace: "/*$&*/"
-			},
+            replacement: {
+                match: /\{section:\i\.SectionTypes\.HEADER,label:\i\.default\.Messages\.BILLING_SETTINGS\},.*?\{section:\i\.SectionTypes\.DIVIDER\},/,
+                replace: "/*$&*/"
+            },
             predicate: () => settings.store.billing,
         },
         { // Gift button
