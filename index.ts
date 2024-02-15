@@ -7,6 +7,7 @@ const PLUGINS = [
     require("./FastMenu").default,
     require("./HistoryModal").default,
     require("./ImageLink").default,
+    require("./ModalFade").default,
     require("./ReplyTimestamp").default,
     require("./SettingsCog").default,
     require("./Title").default,
