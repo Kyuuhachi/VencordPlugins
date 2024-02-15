@@ -48,7 +48,7 @@ export function getChunkPaths(wreq: WebpackInstance): { [chunkId: string]: strin
     throw new Error("getChunkPaths failed");
 }
 
-export async function forceLoadAll(wreq: WebpackInstance, on_chunk = (id: string) => {}) {
+export async function forceLoadAll(wreq: WebpackInstance, on_chunk: (id: string) => void = () => {}) {
     const chunks = getChunkPaths(wreq);
     const loaded = getLoadedChunks(wreq);
     const ids = Object.keys(chunks).filter(id => loaded[id] !== 0);
