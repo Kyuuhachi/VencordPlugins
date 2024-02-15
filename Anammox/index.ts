@@ -54,22 +54,22 @@ export default definePlugin({
             find: ".default.hasLibraryApplication()&&!",
             replacement: [
                 {
-                    match: /Routes\.APPLICATION_STORE,/,
-                    replace: "undefined,",
+                    match: /\i\.Routes\.APPLICATION_STORE,/,
+                    replace: "/*$&*/",
                 },
                 {
-                    match: /Routes\.COLLECTIBLES_SHOP,/,
-                    replace: "undefined,",
+                    match: /\i\.Routes\.COLLECTIBLES_SHOP,/,
+                    replace: "/*$&*/",
                 },
             ],
             predicate: () => settings.store.dms,
         },
         { // Settings, sidebar
             find: "Messages.BILLING_SETTINGS",
-            replacement: {
-                match: /return (\w+)\}\}$/,
-                replace: "return $self.removeBilling($1)}}",
-            },
+			replacement: {
+				match: /\{section:\i\.SectionTypes\.HEADER,label:\i\.default\.Messages\.BILLING_SETTINGS\},.*?\{section:\i\.SectionTypes\.DIVIDER\},/,
+				replace: "/*$&*/"
+			},
             predicate: () => settings.store.billing,
         },
         { // Gift button
@@ -105,14 +105,4 @@ export default definePlugin({
             predicate: () => settings.store.emojiList,
         }
     ],
-
-    removeBilling(sidebar: { section: string, label: string }[]) {
-        let keep = true;
-        return sidebar.filter(v => {
-            if(v.section === "HEADER" && v.label === i18n.Messages.BILLING_SETTINGS) keep = false;
-            const ret = keep;
-            if(v.section === "DIVIDER") keep = true;
-            return ret;
-        });
-    },
 });
