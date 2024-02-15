@@ -51,7 +51,21 @@ export default definePlugin({
                 match: /(?<=Fragment,\{children:)\w+\(\((\w+),\w+\)=>(\(0,\w+\.jsxs\))\(\w+\.animated\.div,\{style:\1,/,
                 replace: "($2(\"div\",{"
             }
-        }
+        },
+        { // load menu stuff on hover, not on click
+            find: "Messages.USER_SETTINGS_WITH_BUILD_OVERRIDE.format",
+            replacement: ((module_id: string) => [
+                {
+                    match: /handleOpenSettingsContextMenu.{0,250}?\i\.el\(("\d+")\)\.then/,
+                    replace: (text,w)=>(module_id=w,text)
+                },
+                {
+                    match: /(?<=Messages\.USER_SETTINGS,)/,
+                    replace: () => `async onMouseEnter(){let r=Vencord.Webpack.wreq;await r.el(${module_id});r(${module_id});},`,
+                },
+            ])(null as any),
+            predicate: () => settings.store.eagerLoad,
+        },
     ],
 
     Layer({ mode, baseLayer = false, ...props }: {
