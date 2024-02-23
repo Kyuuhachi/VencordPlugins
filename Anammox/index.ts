@@ -90,7 +90,7 @@ export default definePlugin({
         { // Emoji list
             find: "useEmojiGrid:function()",
             replacement: {
-                match: /(\w+)=\w+.default.isEmojiCategoryNitroLocked\(\{[^}]*\}\);/,
+                match: /(\w+)=!\w+&&\w+.default.isEmojiCategoryNitroLocked\(\{[^}]*\}\);/,
                 replace: "$&$1||"
             },
             predicate: () => settings.store.emojiList,
