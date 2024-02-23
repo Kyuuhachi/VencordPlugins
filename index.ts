@@ -4,6 +4,7 @@ const PLUGINS = [
     require("./Anammox").default,
     require("./Classify").default,
     require("./ColorMessage").default,
+    require("./DeadMembers").default,
     require("./FastMenu").default,
     require("./HistoryModal").default,
     require("./ImageLink").default,
