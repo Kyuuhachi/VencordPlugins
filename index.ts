@@ -9,6 +9,7 @@ const PLUGINS = [
     require("./HistoryModal").default,
     require("./ImageLink").default,
     require("./MessageLinkTooltip").default,
+    require("./TeX").default,
     require("./ModalFade").default,
     require("./ReplyTimestamp").default,
     require("./SettingsCog").default,
