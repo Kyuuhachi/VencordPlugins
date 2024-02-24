@@ -15,20 +15,10 @@ export default definePlugin({
         },
         {
             find: "Messages.FORUM_POST_AUTHOR_A11Y_LABEL",
-            replacement: [
-                {
-                    match: /(\i)=>\{/,
-                    replace: "$&let _props1=$1,_props2;"
-                },
-                {
-                    match: /\(0,\i\.useForumPostAuthor\)/,
-                    replace: "_props2=$&"
-                },
-                {
-                    match: /children:(\i)/,
-                    replace: "children:$self.wrap({..._props1,..._props2},$1)"
-                },
-            ]
+            replacement: {
+                match: /(?<=\}=(\i),\{(user:\i,author:\i)\}=.{0,400}?\(\i\.Fragment,{children:)\i(?=}\),)/,
+                replace: "$self.wrap({...$1,$2},$&)"
+            }
         },
     ],
 
