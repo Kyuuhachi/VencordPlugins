@@ -54,16 +54,10 @@ export default definePlugin({
         },
         { // load menu stuff on hover, not on click
             find: "Messages.USER_SETTINGS_WITH_BUILD_OVERRIDE.format",
-            replacement: ((module_id: string) => [
-                {
-                    match: /handleOpenSettingsContextMenu.{0,250}?\i\.el\(("\d+")\)\.then/,
-                    replace: (text,w)=>(module_id=w,text)
-                },
-                {
-                    match: /(?<=Messages\.USER_SETTINGS,)/,
-                    replace: () => `async onMouseEnter(){let r=Vencord.Webpack.wreq;await r.el(${module_id});r(${module_id});},`,
-                },
-            ])(null as any),
+            replacement: {
+                match: /(?<=handleOpenSettingsContextMenu.{0,250}?\i\.el\(("\d+")\)\.then.*?Messages\.USER_SETTINGS,)(?=onClick:)/,
+                replace: "onMouseEnter(){let r=Vencord.Webpack.wreq;r.el($1).then(r.bind(r,$1));},"
+            },
             predicate: () => settings.store.eagerLoad,
         },
     ],
