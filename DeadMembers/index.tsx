@@ -1,6 +1,4 @@
-import { definePluginSettings } from "@api/Settings";
-import definePlugin, { OptionType } from "@utils/types";
-import { classes } from "@utils/misc"
+import definePlugin from "@utils/types";
 
 export default definePlugin({
     name: "DeadMembers",
@@ -35,7 +33,7 @@ export default definePlugin({
     ],
 
     wrap(props, text) {
-        let dead = props.channel.guild_id != null
+        const dead = props.channel.guild_id != null
             && !Object.hasOwn(props.author, "guildMemberAvatar")
             && props.message.webhookId == null;
         return dead ? <s className="c98-author-dead">{text}</s> : text;

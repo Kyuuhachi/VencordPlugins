@@ -1,5 +1,5 @@
 import { makeLazy } from "@utils/lazy";
-import { useState, useEffect } from "@webpack/common";
+import { useEffect, useState } from "@webpack/common";
 
 const SCRIPT_URL = "https://unpkg.com/katex@0.16.9/dist/katex.mjs";
 const STYLE_URL = "https://unpkg.com/katex@0.16.9/dist/katex.min.css";
@@ -19,5 +19,5 @@ export function useKatex() {
         if(katex === undefined)
             loadKatex().then(setKatex);
     });
-    return katex
+    return katex;
 }

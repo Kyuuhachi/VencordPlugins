@@ -1,10 +1,9 @@
 import "./style.css";
 
-import definePlugin, { OptionType } from "@utils/types";
-import { React, useMemo, useState, useEffect, Tooltip } from "@webpack/common";
-import { definePluginSettings } from "@api/Settings";
+import definePlugin from "@utils/types";
+import { React, Tooltip, useMemo } from "@webpack/common";
 
-import { loadKatex, useKatex } from "./katex_loader";
+import { useKatex } from "./katex_loader";
 
 export default definePlugin({
     name: "TeX",
@@ -22,11 +21,12 @@ export default definePlugin({
     ],
 
     render({ content }) {
-        let match;
-        if(match = /^\$\$(.*)\$\$$/.exec(content))
-            return <LazyLatex displayMode formula={match[1]} delim="$$" />
-        else if(match = /^\$(.*)\$$/.exec(content))
-            return <LazyLatex formula={match[1]} delim="$" />
+        const displayMatch = /^\$\$(.*)\$\$$/.exec(content);
+        const inlineMatch = /^\$(.*)\$$/.exec(content);
+        if(displayMatch)
+            return <LazyLatex displayMode formula={displayMatch[1]} delim="$$" />;
+        if(inlineMatch)
+            return <LazyLatex formula={inlineMatch[1]} delim="$" />;
     }
 });
 
@@ -39,14 +39,14 @@ function LazyLatex(props) {
 }
 
 function Latex({ katex, formula, displayMode, delim }) {
-    let result = useMemo(() => {
+    const result = useMemo(() => {
         try {
             const html = katex.renderToString(formula, { displayMode });
             return { html };
         } catch(error) {
             return { error };
         }
-    }, [formula, displayMode])
+    }, [formula, displayMode]);
 
     return result.html
         ? <span className="tex" dangerouslySetInnerHTML={{ __html: result.html }} />

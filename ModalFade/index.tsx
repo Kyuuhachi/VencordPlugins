@@ -1,7 +1,6 @@
 import definePlugin from "@utils/types";
-import { React, Forms } from "@webpack/common";
-
 import { findByPropsLazy } from "@webpack";
+import { Forms, React } from "@webpack/common";
 const ModalAPI = findByPropsLazy("openModalLazy", "useModalsStore");
 const Spring = findByPropsLazy("a", "animated", "useTransition");
 const AppLayer = findByPropsLazy("AppLayerContainer", "AppLayerProvider");
@@ -74,7 +73,7 @@ export default definePlugin({
 });
 
 function usePrevious<T>(value: T | undefined): T | undefined {
-    let ref = React.useRef<T>();
+    const ref = React.useRef<T>();
     React.useEffect(() => {
         ref.current = value;
     }, [value]);

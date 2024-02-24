@@ -1,11 +1,9 @@
 import "./style.css";
 
-import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
-import definePlugin, { OptionType } from "@utils/types";
+import definePlugin from "@utils/types";
 import { findComponentByCodeLazy } from "@webpack";
-import { Component } from "react"
-import { RestAPI, MessageStore, Forms, Tooltip, ChannelStore, useState, useStateFromStores, useEffect } from "@webpack/common"
+import { ChannelStore, Forms, MessageStore, RestAPI, Tooltip, useEffect,useState, useStateFromStores } from "@webpack/common";
 
 const ChannelMessage = findComponentByCodeLazy("renderSimpleAccessories)");
 
@@ -25,8 +23,8 @@ export default definePlugin({
     ],
 
     wrapComponent(mention, Component) {
-        return (props) => {
-            if(mention.messageId == undefined) return <Component {...props} />;
+        return props => {
+            if(mention.messageId === undefined) return <Component {...props} />;
             return <Tooltip
                 tooltipClassName="c98-message-link-tooltip"
                 text={() => (
@@ -46,7 +44,7 @@ export default definePlugin({
                     />
                 }
             </Tooltip>;
-        }
+        };
     }
 });
 
