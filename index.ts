@@ -15,6 +15,7 @@ const PLUGINS = [
     require("./Title").default,
     require("./WebpackTarball").default,
     require("./experimental/Classify").default,
+    require("./experimental/DevTools").default,
 ];
 
 for(const plugin of PLUGINS) {
