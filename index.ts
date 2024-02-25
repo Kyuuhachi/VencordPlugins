@@ -2,7 +2,6 @@ import Plugins from "~plugins";
 
 const PLUGINS = [
     require("./Anammox").default,
-    require("./Classify").default,
     require("./ColorMessage").default,
     require("./DeadMembers").default,
     require("./FastMenu").default,
@@ -15,6 +14,7 @@ const PLUGINS = [
     require("./SettingsCog").default,
     require("./Title").default,
     require("./WebpackTarball").default,
+    require("./experimental/Classify").default,
 ];
 
 for(const plugin of PLUGINS) {
