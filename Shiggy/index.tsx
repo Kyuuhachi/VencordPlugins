@@ -20,7 +20,7 @@ export default definePlugin({
         {
             find: "getGuildMemberAvatarURLSimple:function()",
             replacement: {
-                match: /(?<=function (\i)\([^)]*\)\{)(?=.*get\w+URL(?:Simple)?:\1\b)/g,
+                match: /(?<=function (\i)\([^)]*\)\{)(?=.*(?!getAvatarDecorationURL\b)get\w+URL(?:Simple)?:\1\b)/g,
                 replace: "$&return $self.settings.store.shiggy;"
             }
         },
