@@ -25,7 +25,7 @@ export default definePlugin({
     wrap(props, text) {
         const dead = props.channel.guild_id != null
             && !Object.hasOwn(props.author, "guildMemberAvatar")
-            && props.message.webhookId == null;
+            && props.message?.webhookId == null;
         return dead ? <s className="c98-author-dead">{text}</s> : text;
     }
 });
