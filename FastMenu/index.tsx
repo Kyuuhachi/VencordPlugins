@@ -1,9 +1,18 @@
 import { definePluginSettings } from "@api/Settings";
 import { classNameFactory } from "@api/Styles";
+import { proxyLazy } from "@utils/lazy";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy, wreq } from "@webpack";
 import { ComponentDispatch, Forms, useEffect, useRef } from "@webpack/common";
-import { HTMLAttributes } from "react";
+import type { ComponentType, HTMLAttributes, PropsWithChildren, RefObject } from "react";
+
+type FocusLock = ComponentType<PropsWithChildren<{
+    containerRef: RefObject<HTMLElement>
+}>>;
+
+const { FocusLock } = proxyLazy(() => Forms as any as {
+    FocusLock: FocusLock;
+});
 
 const cl = classNameFactory("");
 const Classes = findByPropsLazy("animating", "baseLayer", "bg", "layer", "layers");
@@ -84,7 +93,7 @@ export default definePlugin({
             {...props}
         />;
         if(baseLayer) return node;
-        else return <Forms.FocusLock containerRef={containerRef}>{node}</Forms.FocusLock>;
+        else return <FocusLock containerRef={containerRef}>{node}</FocusLock>;
     },
 
     lazyLayer(moduleId: string, name: string) {

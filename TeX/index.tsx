@@ -1,6 +1,6 @@
 import "./style.css";
 
-import { classes } from "@utils/misc"
+import { classes } from "@utils/misc";
 import definePlugin from "@utils/types";
 import { React, Tooltip, useMemo } from "@webpack/common";
 
@@ -82,5 +82,5 @@ function LatexPlaceholder({ className, delim, children, ...props }) {
             {children}
             {delim}
         </code>
-    )
+    );
 }

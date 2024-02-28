@@ -1,19 +1,18 @@
 import { LazyComponent } from "@utils/lazyReact";
-import { ScrollerThin,useMemo, useRef, useState } from "@webpack/common";
+import { ScrollerThin, useMemo, useRef, useState } from "@webpack/common";
 
 export default LazyComponent(() => {
-
     const require = Vencord.Webpack.wreq;
-    const cn = require.n(require("414456"));
-    const SearchBar = require("810567").default;
-    const DevToolsHeader = require("664336").default;
-    const Inspector = require("50625").default;
-    const DevToolsSubPanel = require("928063").default;
-    const DataTable = require("637171").default;
-    const useTabBar = require("724209").default;
-    const _DevToolsClasses = require("232276");
-    const _DevToolsClasses2 = require("699412");
-    const _DevToolsClasses3 = require("731343");
+    const cn = require.n(require(414456));
+    const SearchBar = require(810567).default;
+    const DevToolsHeader = require(664336).default;
+    const Inspector = require(50625).default;
+    const DevToolsSubPanel = require(928063).default;
+    const DataTable = require(637171).default;
+    const useTabBar = require(724209).default;
+    const _DevToolsClasses = require(232276);
+    const _DevToolsClasses2 = require(699412);
+    const _DevToolsClasses3 = require(731343);
 
     const columns = [
         {
@@ -62,12 +61,13 @@ export default LazyComponent(() => {
     }
 
     return function PluginsTool() {
-        const ref = useRef(null);
+        const ref = useRef<HTMLDivElement>(null);
         const [query, setQuery] = useState("");
 
         const plugins = useMemo(() =>
             Object.values(Vencord.Plugins.plugins)
-                .sort((a, b) => a.name.localeCompare(b.name))
+                .sort((a, b) => a.name.localeCompare(b.name)),
+        []
         );
         const data = plugins
             .filter(plugin => (

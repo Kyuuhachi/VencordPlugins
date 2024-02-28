@@ -6,8 +6,8 @@ import { Timestamp } from "@webpack/common";
 import { Message } from "discord-types/general";
 import { HTMLAttributes } from "react";
 
-const MessageIds = findByPropsLazy("getMessageTimestampId");
-const DateUtils = findByPropsLazy("calendarFormat", "dateFormat", "isSameDay", "accessibilityLabelCalendarFormat");
+const { getMessageTimestampId } = findByPropsLazy("getMessageTimestampId");
+const { calendarFormat, dateFormat, isSameDay } = findByPropsLazy("calendarFormat", "dateFormat", "isSameDay", "accessibilityLabelCalendarFormat");
 const MessageClasses = findByPropsLazy("separator", "latin24CompactTimeStamp");
 
 function Sep(props: HTMLAttributes<HTMLElement>) {
@@ -40,16 +40,16 @@ export default definePlugin({
             const refTimestamp = referencedMessage.message!.timestamp;
             const baseTimestamp = baseMessage.timestamp;
             return <Timestamp
-                id={MessageIds.getMessageTimestampId(referencedMessage.message)}
+                id={getMessageTimestampId(referencedMessage.message)}
                 className="c98-reply-timestamp"
-                compact={DateUtils.isSameDay(refTimestamp, baseTimestamp)}
+                compact={isSameDay(refTimestamp, baseTimestamp)}
                 timestamp={refTimestamp}
                 isInline={false}
             >
                 <Sep>[</Sep>
-                { DateUtils.isSameDay(refTimestamp, baseTimestamp)
-                    ? DateUtils.dateFormat(refTimestamp, "LT")
-                    : DateUtils.calendarFormat(refTimestamp)
+                { isSameDay(refTimestamp, baseTimestamp)
+                    ? dateFormat(refTimestamp, "LT")
+                    : calendarFormat(refTimestamp)
                 }
                 <Sep>]</Sep>
             </Timestamp>;

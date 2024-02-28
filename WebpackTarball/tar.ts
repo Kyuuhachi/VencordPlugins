@@ -35,7 +35,7 @@ export default class TarFile {
 
         let pos = 0;
         for(const [size, val] of fields) {
-            let string;
+            let string: string;
             if(val === null) {
                 checksumPos = pos;
                 string = " ".repeat(size);

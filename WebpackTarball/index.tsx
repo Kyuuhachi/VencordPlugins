@@ -1,8 +1,8 @@
 import { definePluginSettings } from "@api/Settings";
 import { closeModal, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalProps, ModalRoot, openModal } from "@utils/modal";
 import definePlugin, { OptionType } from "@utils/types";
-import { findByProps,wreq } from "@webpack";
-import { Button, Flex, Forms, Timestamp, useState } from "@webpack/common";
+import { findByProps, wreq } from "@webpack";
+import { Button, Flex, Forms, Switch, Text, Timestamp, useState } from "@webpack/common";
 
 import TarFile from "./tar";
 import * as Webpack from "./webpack";
@@ -77,15 +77,15 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
         <ModalRoot {...modalProps}>
             <ModalHeader>
                 <Flex.Child>
-                    <Forms.Heading variant="heading-lg/semibold">
+                    <Forms.FormTitle tag="h2">
                         Webpack Tarball
-                    </Forms.Heading>
-                    <Forms.Text variant="text-md/normal">
+                    </Forms.FormTitle>
+                    <Text variant="text-md/normal">
                         <Timestamp timestamp={new Date(builtAt)} isInline={false}>
                             {"Build number "}
                             {buildNumber}
                         </Timestamp>
-                    </Forms.Text>
+                    </Text>
                 </Flex.Child>
                 <ModalCloseButton onClick={close} />
             </ModalHeader>
@@ -96,13 +96,13 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
                         Lazy chunks
                     </Forms.FormTitle>
                     <Flex align={Flex.Align.CENTER}>
-                        <Forms.Text
+                        <Text
                             variant="text-md/normal"
                             style={{ flexGrow: 1 }}
                         >
                             {loaded}/{all}
                             {errored ? ` (${errored} errors)` : null}
-                        </Forms.Text>
+                        </Text>
                         <Button
                             disabled={loading === all || isLoading}
                             onClick={async () => {
@@ -117,13 +117,13 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
                     </Flex>
                 </div>
 
-                <Forms.FormSwitch
+                <Switch
                     value={settings.use(["usePatched"]).usePatched}
                     onChange={(v: boolean) => settings.store.usePatched = v}
                     hideBorder
                 >
                     {settings.def.usePatched.description}
-                </Forms.FormSwitch>
+                </Switch>
             </ModalContent>
 
             <ModalFooter>

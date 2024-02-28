@@ -1,11 +1,37 @@
 import "./style.css";
 
 import ErrorBoundary from "@components/ErrorBoundary";
+import { proxyLazy } from "@utils/lazy";
 import definePlugin from "@utils/types";
 import { findComponentByCodeLazy } from "@webpack";
-import { ChannelStore, Forms, MessageStore, RestAPI, Tooltip, useEffect,useState, useStateFromStores } from "@webpack/common";
+import { ChannelStore, Forms, MessageStore, RestAPI, Tooltip, useEffect, useState, useStateFromStores } from "@webpack/common";
+import type { ComponentType, HTMLAttributes } from "react";
 
-const ChannelMessage = findComponentByCodeLazy("renderSimpleAccessories)");
+declare enum SpinnerTypes {
+    WANDERING_CUBES = "wanderingCubes",
+    CHASING_DOTS = "chasingDots",
+    PULSING_ELLIPSIS = "pulsingEllipsis",
+    SPINNING_CIRCLE = "spinningCircle",
+    SPINNING_CIRCLE_SIMPLE = "spinningCircleSimple",
+    LOW_MOTION = "lowMotion",
+}
+
+type Spinner = ComponentType<Omit<HTMLAttributes<HTMLDivElement>, "children"> & {
+    type?: SpinnerTypes;
+    animated?: boolean;
+    className?: string;
+    itemClassName?: string;
+    "aria-label"?: string;
+}> & {
+    Type: typeof SpinnerTypes;
+};
+
+const { Spinner } = proxyLazy(() => Forms as any as {
+    Spinner: Spinner,
+    SpinnerTypes: typeof SpinnerTypes;
+});
+
+const ChannelMessage = findComponentByCodeLazy("renderSimpleAccessories)") as ComponentType<any>;
 
 export default definePlugin({
     name: "MessageLinkTooltip",
@@ -22,19 +48,19 @@ export default definePlugin({
         }
     ],
 
-    wrapComponent(mention, Component) {
+    wrapComponent({ messageId, channelId }, Component: ComponentType) {
         return props => {
-            if(mention.messageId === undefined) return <Component {...props} />;
+            if(messageId === undefined) return <Component {...props} />;
             return <Tooltip
                 tooltipClassName="c98-message-link-tooltip"
-                text={() => (
+                text={
                     <ErrorBoundary>
                         <MessagePreview
-                            channelId={mention.channelId}
-                            messageId={mention.messageId}
+                            channelId={channelId}
+                            messageId={messageId}
                         />
                     </ErrorBoundary>
-                )}
+                }
             >
                 {({ onMouseEnter, onMouseLeave }) =>
                     <Component
@@ -53,7 +79,7 @@ function MessagePreview({ channelId, messageId }) {
     const message = useMessage(channelId, messageId);
     // TODO handle load failure
     if(!message) {
-        return <Forms.Spinner type={Forms.Spinner.Type.PULSING_ELLIPSIS} />;
+        return <Spinner type={Spinner.Type.PULSING_ELLIPSIS} />;
     }
 
     return <ChannelMessage

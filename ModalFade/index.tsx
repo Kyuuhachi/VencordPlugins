@@ -1,15 +1,25 @@
+import { proxyLazy } from "@utils/lazy";
 import definePlugin from "@utils/types";
 import { findByPropsLazy } from "@webpack";
-import { Forms, React } from "@webpack/common";
-const ModalAPI = findByPropsLazy("openModalLazy", "useModalsStore");
-const Spring = findByPropsLazy("a", "animated", "useTransition");
-const AppLayer = findByPropsLazy("AppLayerContainer", "AppLayerProvider");
+import { Forms, useEffect, useRef } from "@webpack/common";
+import type { StoreApi, UseBoundStore } from "zustand";
 
 type Modal = {
     Layer?: any,
     instant?: boolean,
     backdropStyle?: "SUBTLE" | "DARK" | "BLUR",
 };
+
+const { useModalContext, useModalsStore } = proxyLazy(() => Forms as any as {
+    useModalContext(): "default" | "popout";
+    useModalsStore: UseBoundStore<StoreApi<{
+        default: Modal[];
+        popout: Modal[];
+    }>>,
+});
+
+const Spring = findByPropsLazy("a", "animated", "useTransition");
+const AppLayer = findByPropsLazy("AppLayerContainer", "AppLayerProvider");
 
 const ANIMS = {
     SUBTLE: {
@@ -58,8 +68,8 @@ export default definePlugin({
     },
 
     MainWrapper(props: object) {
-        const context = Forms.useModalContext();
-        const modals: Modal[] = ModalAPI.useModalsStore((modals: any) => modals[context] ?? []);
+        const context = useModalContext();
+        const modals = useModalsStore(modals => modals[context] ?? []);
         const modal = modals.findLast(modal => modal.Layer == null || modal.Layer === AppLayer.default);
         const anim = ANIMS[modal?.backdropStyle ?? "DARK"];
         const isInstant = modal?.instant;
@@ -73,8 +83,8 @@ export default definePlugin({
 });
 
 function usePrevious<T>(value: T | undefined): T | undefined {
-    const ref = React.useRef<T>();
-    React.useEffect(() => {
+    const ref = useRef<T>();
+    useEffect(() => {
         ref.current = value;
     }, [value]);
     return ref.current;
