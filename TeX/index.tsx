@@ -1,5 +1,6 @@
 import "./style.css";
 
+import { classes } from "@utils/misc"
 import definePlugin from "@utils/types";
 import { React, Tooltip, useMemo } from "@webpack/common";
 
@@ -35,7 +36,7 @@ function LazyLatex(props) {
     const katex = useKatex();
     return katex
         ? <Latex {...props} katex={katex} />
-        : <code className="tex-loading code">{delim}{formula}{delim}</code>;
+        : <LatexPlaceholder className="tex-loading" delim={delim}>{formula}</LatexPlaceholder>;
 }
 
 function Latex({ katex, formula, displayMode, delim }) {
@@ -61,18 +62,25 @@ function LatexError({ formula, delim, error }) {
     return (
         <Tooltip text={rawMessage}>
             {({ onMouseLeave, onMouseEnter }) => (
-                <code
+                <LatexPlaceholder
                     onMouseLeave={onMouseLeave}
                     onMouseEnter={onMouseEnter}
-                    className="tex-error inline"
+                    delim={delim}
+                    className="tex-error"
                 >
-                    {delim}
-                    {pre}
-                    <strong>{mid}</strong>
-                    {suf}
-                    {delim}
-                </code>
+                    {pre}<strong>{mid}</strong>{suf}
+                </LatexPlaceholder>
             )}
         </Tooltip>
     );
+}
+
+function LatexPlaceholder({ className, delim, children, ...props }) {
+    return (
+        <code className={classes(className, "tex-placeholder inline")} {...props}>
+            {delim}
+            {children}
+            {delim}
+        </code>
+    )
 }
