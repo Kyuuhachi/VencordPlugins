@@ -80,7 +80,7 @@ export default definePlugin({
                 [Classes.baseLayer]: baseLayer,
                 "stop-animations": hidden,
             })}
-            style={{ visibility: hidden ? "hidden" : "visible" }}
+            style={{ opacity: hidden ? 0 : undefined }}
             {...props}
         />;
         if(baseLayer) return node;
