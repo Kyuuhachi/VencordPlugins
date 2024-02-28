@@ -1,5 +1,5 @@
-import definePlugin from "@utils/types";
 import ErrorBoundary from "@components/ErrorBoundary";
+import definePlugin from "@utils/types";
 
 import PluginsTool from "./PluginsTool";
 
