@@ -2,7 +2,7 @@ import { definePluginSettings } from "@api/Settings";
 import { classNameFactory } from "@api/Styles";
 import { proxyLazy } from "@utils/lazy";
 import definePlugin, { OptionType } from "@utils/types";
-import { findByPropsLazy, wreq } from "@webpack";
+import { findByPropsLazy } from "@webpack";
 import { ComponentDispatch, Forms, useEffect, useRef } from "@webpack/common";
 import type { ComponentType, HTMLAttributes, PropsWithChildren, RefObject } from "react";
 
@@ -22,16 +22,9 @@ const settings = definePluginSettings({
         description: "Eagerly load menu contents (faster, but slightly more network load)",
         type: OptionType.BOOLEAN,
         default: true,
-        onChange(val) {
-            if(val) eagerLoad();
-        }
+        restartNeeded: true,
     },
 });
-
-const lazyLayers: string[] = [];
-function eagerLoad() {
-    lazyLayers.forEach(wreq.el);
-}
 
 export default definePlugin({
     name: "FastMenu",
@@ -48,8 +41,9 @@ export default definePlugin({
                     replace: "$1=$self.Layer;",
                 },
                 { // Grab lazy-loaded layers
-                    match: /webpackId:("\d+"),name:("\w+")/g,
-                    replace: "$&,_:$self.lazyLayer($1,$2)",
+                    match: /createPromise:\(\)=>([^:}]*?),webpackId:"\d+",name:(?!="CollectiblesShop")"\w+"/g,
+                    replace: "$&,_:$1",
+                    predicate: () => settings.store.eagerLoad,
                 },
             ],
         },
@@ -94,15 +88,5 @@ export default definePlugin({
         />;
         if(baseLayer) return node;
         else return <FocusLock containerRef={containerRef}>{node}</FocusLock>;
-    },
-
-    lazyLayer(moduleId: string, name: string) {
-        if(name !== "CollectiblesShop")
-            lazyLayers.push(moduleId);
-    },
-
-    start() {
-        if(settings.store.eagerLoad)
-            eagerLoad();
     },
 });
