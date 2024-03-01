@@ -1,4 +1,5 @@
 import { definePluginSettings } from "@api/Settings";
+import { makeLazy } from "@utils/lazy";
 import { closeModal, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalProps, ModalRoot, openModal } from "@utils/modal";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByProps, wreq } from "@webpack";
@@ -34,17 +35,22 @@ export default definePlugin({
     },
 });
 
-export function getBuildNumber() {
-    const initSentry = findByProps("initSentry").initSentry.toString();
-    const [, buildNumber] = initSentry.match(/\.setTag\("buildNumber",\(\w+="(\d+)","\1"\)\)/);
-    const [, builtAt] = initSentry.match(/\.setTag\("builtAt",String\("(\d+)"\)\)/);
-    return { buildNumber, builtAt: Number(builtAt) };
-}
+export const getBuildNumber = makeLazy(() => {
+    try {
+        const initSentry = findByProps("initSentry").initSentry.toString();
+        const [, buildNumber] = initSentry.match(/\.setTag\("buildNumber",\(\w+="(\d+)","\1"\)\)/);
+        const [, builtAt] = initSentry.match(/\.setTag\("builtAt",String\("(\d+)"\)\)/);
+        return { buildNumber, builtAt: new Date(Number(builtAt)) };
+    } catch(e) {
+        console.error(e);
+        return { buildNumber: "unknown", builtAt: new Date() };
+    }
+});
 
 function saveTar(usePatched: boolean) {
     const tar = new TarFile();
     const { buildNumber, builtAt } = getBuildNumber();
-    const mtime = (builtAt/1000)|0;
+    const mtime = (builtAt.getTime() / 1000)|0;
     const webpack = window.webpackChunkdiscord_app as any[];
     const modules: { [id: string]: any } = Object.assign({}, ...webpack.map(a => a[1]));
 
