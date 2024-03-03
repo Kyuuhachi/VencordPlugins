@@ -49,6 +49,5 @@ function DeadIndicator({ channel, userId, text }) {
         [GuildMemberStore],
         () => GuildMemberStore.isMember(channel.guild_id, userId),
     );
-    console.log(guildId, userId, isMember, ignore, text);
-    return guildId && !isMember ? <s className="c98-author-dead">{text}</s> : text;
+    return channel.guild_id && !isMember ? <s className="c98-author-dead">{text}</s> : text;
 }
