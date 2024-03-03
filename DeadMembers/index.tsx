@@ -47,7 +47,7 @@ export default definePlugin({
 function DeadIndicator({ channel, userId, text }) {
     const isMember = useStateFromStores(
         [GuildMemberStore],
-        () => GuildMemberStore.isMember(channel.guild_id, userId),
+        () => GuildMemberStore.isMember(channel?.guild_id, userId),
     );
-    return channel.guild_id && !isMember ? <s className="c98-author-dead">{text}</s> : text;
+    return channel?.guild_id && !isMember ? <s className="c98-author-dead">{text}</s> : text;
 }
