@@ -1,4 +1,5 @@
 import definePlugin from "@utils/types";
+import { ChannelStore, GuildMemberStore, useStateFromStores } from "@webpack/common";
 
 export default definePlugin({
     name: "DeadMembers",
@@ -10,22 +11,44 @@ export default definePlugin({
             find: "UsernameDecorationTypes:function()",
             replacement: {
                 match: /children:(\(\i\?"@":""\)\+\i)/,
-                replace: "children:$self.wrap(arguments[0],$1)"
+                replace: "children:$self.wrapMessageAuthor(arguments[0],$1)"
             }
         },
         {
             find: "Messages.FORUM_POST_AUTHOR_A11Y_LABEL",
             replacement: {
                 match: /(?<=\}=(\i),\{(user:\i,author:\i)\}=.{0,400}?\(\i\.Fragment,{children:)\i(?=}\),)/,
-                replace: "$self.wrap({...$1,$2},$&)"
+                replace: "$self.wrapForumAuthor({...$1,$2},$&)"
             }
         },
     ],
 
-    wrap(props, text) {
-        const dead = props.channel.guild_id != null
-            && !Object.hasOwn(props.author, "guildMemberAvatar")
-            && props.message?.webhookId == null;
-        return dead ? <s className="c98-author-dead">{text}</s> : text;
-    }
+    wrapMessageAuthor({ author, message }, text) {
+        const channel = ChannelStore.getChannel(message.channel_id);
+        return message.webhookId
+            ? text
+            : <DeadIndicator
+                channel={channel}
+                userId={message.author.id}
+                text={text}
+            />;
+    },
+
+    wrapForumAuthor({ channel, user }, text) {
+        return <DeadIndicator
+            channel={channel}
+            userId={user.id}
+            text={text}
+        />;
+    },
 });
+
+
+function DeadIndicator({ channel, userId, text }) {
+    const isMember = useStateFromStores(
+        [GuildMemberStore],
+        () => GuildMemberStore.isMember(channel.guild_id, userId),
+    );
+    console.log(guildId, userId, isMember, ignore, text);
+    return guildId && !isMember ? <s className="c98-author-dead">{text}</s> : text;
+}
