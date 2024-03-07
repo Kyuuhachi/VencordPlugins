@@ -1,5 +1,6 @@
 import { Logger } from "@utils/Logger";
-import definePlugin from "@utils/types";
+import definePlugin, { StartAt } from "@utils/types";
+import * as Webpack from "@webpack";
 
 type Spec = {
     name: string;
@@ -24,17 +25,6 @@ export default definePlugin({
 
     patches: [
         {
-            // This 'e' is kinda awkward, but I haven't seen anything it fails to catch yet
-            // It does catch a few false positives though.
-            find: '"use strict";e.exports={',
-            all: true,
-            replacement: {
-                match: /\}\}$/,
-                replace: "};$self.register(e.exports)}",
-            },
-            noWarn: true,
-        },
-        {
             // Let's patch react itself. What's the worst that can happen?
             find: ",this.attributeNamespace=",
             replacement: {
@@ -45,22 +35,31 @@ export default definePlugin({
     ],
 
     spec: SPEC,
-    classes: {} as { [className: string]: string },
+    classes: {} as Record<string, string>,
     modules: [] as object[],
 
-    register(module: object) {
-        if(!Object.entries(module)
-            .every(([k, v]) => typeof v === "string" && v.startsWith(k.replaceAll("/", "-") + "_"))
-        ) {
-            logger.debug("skipping", module);
-            return;
+    startAt: StartAt.Init,
+    start() {
+        // The plugin won't work if it's enabled from the menu anyway so let's not register the listener
+        if(!Webpack.wreq)
+            Webpack.addListener((module, id) => this.register(id, module));
+    },
+
+    register(id: string, module: object) {
+        if(typeof module !== "object") return;
+        const keys = Object.keys(module);
+        if(keys.length == 0) return;
+        for(const k of keys) {
+            const v = module[k];
+            if(typeof v !== "string") return;
+            if(!v.startsWith(k.replaceAll("/", "-") + "_")) return;
         }
 
         this.modules.push(module);
 
         let prefix = this.spec.find(spec => this.checkSpec(module, spec))?.name;
         if(prefix === undefined) {
-            const debugClass = `u${this.modules.length}`;
+            const debugClass = `u${id}`;
             prefix = `u ${debugClass} ${debugClass}`;
             document.head.appendChild(STYLE);
             STYLE.innerHTML += `.${debugClass}.${debugClass}.${debugClass}.${debugClass} {}\n`;
