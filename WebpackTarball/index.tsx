@@ -9,10 +9,16 @@ import TarFile from "./tar";
 import * as Webpack from "./webpack";
 
 export const settings = definePluginSettings({
-    usePatched: {
+    patched: {
         type: OptionType.BOOLEAN,
         default: true,
-        description: "Include Vencord patches",
+        description: "Include patched modules",
+        restartNeeded: true,
+    },
+    original: {
+        type: OptionType.BOOLEAN,
+        default: true,
+        description: "Include original modules",
         restartNeeded: true,
     },
 });
@@ -24,7 +30,7 @@ export default definePlugin({
     settings,
 
     toolboxActions: {
-        async "Webpack Tarball"() {
+        "Webpack Tarball"() {
             const key = openModal(props => (
                 <TarModal
                     modalProps={props}
@@ -47,17 +53,24 @@ export const getBuildNumber = makeLazy(() => {
     }
 });
 
-function saveTar(usePatched: boolean) {
+function saveTar(patched: boolean, vanilla: boolean) {
     const tar = new TarFile();
     const { buildNumber, builtAt } = getBuildNumber();
     const mtime = (builtAt.getTime() / 1000)|0;
     const webpack = window.webpackChunkdiscord_app as any[];
     const modules: { [id: string]: any } = Object.assign({}, ...webpack.map(a => a[1]));
 
-    const root = usePatched ? `vencord-${buildNumber}` : `discord-${buildNumber}`;
+    const root = patched ? `vencord-${buildNumber}` : `discord-${buildNumber}`;
 
     Object.entries(modules).forEach(([id, module]) => {
-        module = usePatched ? module : (module.original ?? module);
+        if(patched && vanilla && module.original) {
+            tar.addTextFile(
+                `${root}/${id}.orig.js`,
+                `webpack[${JSON.stringify(id)}] = ${module.original.toString()}\n`,
+                { mtime },
+            );
+        }
+        module = patched ? module : (module.original ?? module);
         tar.addTextFile(
             `${root}/${id}.js`,
             `webpack[${JSON.stringify(id)}] = ${module.toString()}\n`,
@@ -79,6 +92,7 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
     const loaded = status.filter(v => v === 0 || v === undefined).length;
     const errored = status.filter(v => v === undefined).length;
     const all = Object.keys(paths).length;
+    const { patched, original } = settings.use(["patched", "original"]);
     return (
         <ModalRoot {...modalProps}>
             <ModalHeader>
@@ -124,18 +138,27 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
                 </div>
 
                 <Switch
-                    value={settings.use(["usePatched"]).usePatched}
-                    onChange={(v: boolean) => settings.store.usePatched = v}
+                    value={patched}
+                    onChange={v => settings.store.patched = v}
                     hideBorder
                 >
-                    {settings.def.usePatched.description}
+                    {settings.def.patched.description}
+                </Switch>
+
+                <Switch
+                    value={original}
+                    onChange={v => settings.store.original = v}
+                    hideBorder
+                >
+                    {settings.def.original.description}
                 </Switch>
             </ModalContent>
 
             <ModalFooter>
                 <Button
+                    disabled={!patched && !original}
                     onClick={() => {
-                        saveTar(settings.store.usePatched);
+                        saveTar(patched, original);
                         close();
                     }}
                 >
