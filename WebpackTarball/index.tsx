@@ -15,12 +15,6 @@ export const settings = definePluginSettings({
         description: "Include patched modules",
         restartNeeded: true,
     },
-    original: {
-        type: OptionType.BOOLEAN,
-        default: true,
-        description: "Include original modules",
-        restartNeeded: true,
-    },
 });
 
 export default definePlugin({
@@ -53,7 +47,7 @@ export const getBuildNumber = makeLazy(() => {
     }
 });
 
-function saveTar(patched: boolean, original: boolean) {
+function saveTar(patched: boolean) {
     const tar = new TarFile();
     const { buildNumber, builtAt } = getBuildNumber();
     const mtime = (builtAt.getTime() / 1000)|0;
@@ -66,15 +60,15 @@ function saveTar(patched: boolean, original: boolean) {
     for(const [id, module] of Object.entries(modules)) {
         const patchedSrc = module.toString();
         const originalSrc = (module.original ?? module).toString();
-        if(patched && original && patchedSrc != originalSrc)
+        if(patched && patchedSrc != originalSrc)
             tar.addTextFile(
-                `${root}/${id}.orig.js`,
-                `webpack[${JSON.stringify(id)}] = ${originalSrc}\n`,
+                `${root}/${id}.v.js`,
+                `webpack[${JSON.stringify(id)}] = ${patchedSrc}\n`,
                 { mtime },
             );
         tar.addTextFile(
             `${root}/${id}.js`,
-            `webpack[${JSON.stringify(id)}] = ${patched ? patchedSrc : originalSrc}\n`,
+            `webpack[${JSON.stringify(id)}] = ${originalSrc}\n`,
             { mtime },
         );
     }
@@ -93,7 +87,7 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
     const loaded = status.filter(v => v === 0 || v === undefined).length;
     const errored = status.filter(v => v === undefined).length;
     const all = Object.keys(paths).length;
-    const { patched, original } = settings.use(["patched", "original"]);
+    const { patched } = settings.use(["patched"]);
     return (
         <ModalRoot {...modalProps}>
             <ModalHeader>
@@ -145,21 +139,12 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
                 >
                     {settings.def.patched.description}
                 </Switch>
-
-                <Switch
-                    value={original}
-                    onChange={v => settings.store.original = v}
-                    hideBorder
-                >
-                    {settings.def.original.description}
-                </Switch>
             </ModalContent>
 
             <ModalFooter>
                 <Button
-                    disabled={!patched && !original}
                     onClick={() => {
-                        saveTar(patched, original);
+                        saveTar(patched);
                         close();
                     }}
                 >
