@@ -53,30 +53,31 @@ export const getBuildNumber = makeLazy(() => {
     }
 });
 
-function saveTar(patched: boolean, vanilla: boolean) {
+function saveTar(patched: boolean, original: boolean) {
     const tar = new TarFile();
     const { buildNumber, builtAt } = getBuildNumber();
     const mtime = (builtAt.getTime() / 1000)|0;
+    // wreq.m is missing a few modules for unknown reasons, so need to grab them like this
     const webpack = window.webpackChunkdiscord_app as any[];
-    const modules: { [id: string]: any } = Object.assign({}, ...webpack.map(a => a[1]));
+    const modules: Record<string, any> = Object.assign({}, ...webpack.map(a => a[1]));
 
     const root = patched ? `vencord-${buildNumber}` : `discord-${buildNumber}`;
 
-    Object.entries(modules).forEach(([id, module]) => {
-        if(patched && vanilla && module.original) {
+    for(const [id, module] of Object.entries(modules)) {
+        const patchedSrc = module.toString();
+        const originalSrc = (module.original ?? module).toString();
+        if(patched && original && patchedSrc != originalSrc)
             tar.addTextFile(
                 `${root}/${id}.orig.js`,
-                `webpack[${JSON.stringify(id)}] = ${module.original.toString()}\n`,
+                `webpack[${JSON.stringify(id)}] = ${originalSrc}\n`,
                 { mtime },
             );
-        }
-        module = patched ? module : (module.original ?? module);
         tar.addTextFile(
             `${root}/${id}.js`,
-            `webpack[${JSON.stringify(id)}] = ${module.toString()}\n`,
+            `webpack[${JSON.stringify(id)}] = ${patched ? patchedSrc : originalSrc}\n`,
             { mtime },
         );
-    });
+    }
     tar.save(`${root}.tar`);
 }
 
