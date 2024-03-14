@@ -106,6 +106,7 @@
     { "name": "LoadingFakeMessage", "include": ["attachmentContainer", "blob", "compactTimestamp", "contents"] },
     { "name": "LoadingSpinner", "include": ["body", "contentBase", "problemsText", "tipTitle"] },
     { "name": "Margin", "include": ["marginBottom20", "marginCenterHorz", "marginTop40"] },
+    { "name": "MediaMosaic", "include": ["wrapperMediaMosaic", "wrapperMediaMosaic", "playCenter", "audioControls", "videoControls"] },
     { "name": "Member", "include": ["lostPermission", "member", "memberInner", "ownerIcon"] },
     { "name": "MemberInner", "include": ["nameAndDecorators", "subText", "wrappedName"], "exclude":["container"] },
     { "name": "Members", "include": ["membersGroup", "membersWrap", "placeholderPulse"] },
