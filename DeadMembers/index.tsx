@@ -10,8 +10,8 @@ export default definePlugin({
         {
             find: "UsernameDecorationTypes:function()",
             replacement: {
-                match: /children:(\(\i\?"@":""\)\+\i)/,
-                replace: "children:$self.wrapMessageAuthor(arguments[0],$1)"
+                match: /(\i)=\{className:\i.username,style:.*?onContextMenu:\i,children:.*?\}/,
+                replace: "$&,{}=$1.children=$self.wrapMessageAuthor(arguments[0],$1.children)"
             }
         },
         {
