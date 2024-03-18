@@ -23,7 +23,7 @@ export default definePlugin({
         },
     ],
 
-    wrapMessageAuthor({ author, message }, text) {
+    wrapMessageAuthor({ message }, text) {
         const channel = ChannelStore.getChannel(message.channel_id);
         return message.webhookId
             ? text
@@ -35,11 +35,13 @@ export default definePlugin({
     },
 
     wrapForumAuthor({ channel, user }, text) {
-        return <DeadIndicator
-            channel={channel}
-            userId={user.id}
-            text={text}
-        />;
+        return !user
+            ? text
+            : <DeadIndicator
+                channel={channel}
+                userId={user.id}
+                text={text}
+            />;
     },
 });
 
