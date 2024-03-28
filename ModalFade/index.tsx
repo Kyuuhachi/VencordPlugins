@@ -1,3 +1,4 @@
+import { Devs } from "@utils/constants";
 import { proxyLazy } from "@utils/lazy";
 import definePlugin from "@utils/types";
 import { findByPropsLazy } from "@webpack";
@@ -39,7 +40,7 @@ const ANIMS = {
 export default definePlugin({
     name: "ModalFade",
     description: "Makes modals fade the backdrop, rather than dimming",
-    authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
+    authors: [Devs.Kyuuhachi],
 
     patches: [
         {

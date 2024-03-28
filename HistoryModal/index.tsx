@@ -2,6 +2,7 @@ import "./styles.css";
 
 import { classNameFactory } from "@api/Styles";
 import ErrorBoundary from "@components/ErrorBoundary";
+import { Devs } from "@utils/constants";
 import { closeModal, ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
 import { findByPropsLazy } from "@webpack";
@@ -21,7 +22,7 @@ let old_renderEdit: Function;
 export default definePlugin({
     name: "HistoryModal",
     description: "Shows edit history in a modal, instead of inline",
-    authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
+    authors: [Devs.Kyuuhachi],
 
     dependencies: ["MessageLogger"],
 

@@ -1,10 +1,11 @@
+import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { ChannelStore, GuildMemberStore, useStateFromStores } from "@webpack/common";
 
 export default definePlugin({
     name: "DeadMembers",
     description: "Shows when the sender of a message has left the guild",
-    authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
+    authors: [Devs.Kyuuhachi],
 
     patches: [
         {

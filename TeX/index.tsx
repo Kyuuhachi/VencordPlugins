@@ -1,5 +1,6 @@
 import "./style.css";
 
+import { Devs } from "@utils/constants";
 import { classes } from "@utils/misc";
 import definePlugin from "@utils/types";
 import { React, Tooltip, useMemo } from "@webpack/common";
@@ -9,7 +10,7 @@ import { useKatex } from "./katex_loader";
 export default definePlugin({
     name: "TeX",
     description: "Typesets math in messages, written as `$x$` or `$$x$$`.",
-    authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
+    authors: [Devs.Kyuuhachi],
 
     patches: [
         {

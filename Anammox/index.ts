@@ -1,4 +1,5 @@
 import { definePluginSettings } from "@api/Settings";
+import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 
 export const settings = definePluginSettings({
@@ -31,7 +32,7 @@ export const settings = definePluginSettings({
 export default definePlugin({
     name: "Anammox",
     description: "A microbial process that plays an important part in the nitrogen cycle",
-    authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
+    authors: [Devs.Kyuuhachi],
     settings,
 
     patches: [

@@ -1,6 +1,7 @@
 import { definePluginSettings } from "@api/Settings";
 import * as Styles from "@api/Styles";
 import { makeRange } from "@components/PluginSettings/components";
+import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy } from "@webpack";
 
@@ -28,7 +29,7 @@ function updateStyle() {
 export default definePlugin({
     name: "ColorMessage",
     description: "Colors message content with author's role color",
-    authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
+    authors: [Devs.Kyuuhachi],
     settings,
 
     patches: [

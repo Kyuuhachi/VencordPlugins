@@ -1,6 +1,7 @@
 import "./style.css";
 
 import ErrorBoundary from "@components/ErrorBoundary";
+import { Devs } from "@utils/constants";
 import { proxyLazy } from "@utils/lazy";
 import definePlugin from "@utils/types";
 import { findComponentByCodeLazy } from "@webpack";
@@ -36,7 +37,7 @@ const ChannelMessage = findComponentByCodeLazy("renderSimpleAccessories)") as Co
 export default definePlugin({
     name: "MessageLinkTooltip",
     description: "Like MessageLinkEmbed but without taking space",
-    authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
+    authors: [Devs.Kyuuhachi],
 
     patches: [
         {

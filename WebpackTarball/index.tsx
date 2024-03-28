@@ -1,4 +1,5 @@
 import { definePluginSettings } from "@api/Settings";
+import { Devs } from "@utils/constants";
 import { makeLazy } from "@utils/lazy";
 import { closeModal, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalProps, ModalRoot, openModal } from "@utils/modal";
 import definePlugin, { OptionType } from "@utils/types";
@@ -20,7 +21,7 @@ export const settings = definePluginSettings({
 export default definePlugin({
     name: "WebpackTarball",
     description: "Converts Discord's webpack sources into a tarball.",
-    authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
+    authors: [Devs.Kyuuhachi],
     settings,
 
     toolboxActions: {
