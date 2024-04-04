@@ -22,9 +22,9 @@ export default definePlugin({
 
     patches: [
         {
-            find: ",{renderSingleLineMessage:function(){return ",
+            find: "renderSingleLineMessage:function()",
             replacement: {
-                match: /(?<="aria-label":\w+,children:\[)(?=\w+,\w+,\w+\])/,
+                match: /(?<="aria-label":\i,children:\[)(?=\i,\i,\i\])/,
                 replace: "$self.ReplyTimestamp(arguments[0]),"
             }
         }
