@@ -42,7 +42,7 @@ export default definePlugin({
     start() {
         // The plugin won't work if it's enabled from the menu anyway so let's not register the listener
         if(!Webpack.wreq)
-            Webpack.addListener((module, id) => this.register(id, module));
+            Webpack.moduleListeners.add((module, id) => this.register(id, module));
     },
 
     register(id: string, module: object) {
