@@ -1,11 +1,10 @@
 import type { WebpackInstance } from "discord-types/other";
 
 export async function protectWebpack<T>(webpack: any[], body: () => Promise<T>): Promise<T> {
-    const push = webpack.push.bind(webpack);
-    const webpack_push = Object.getOwnPropertyDescriptor(webpack, "push")!;
-    Object.defineProperty(webpack, "push", {
-        get: () => push,
-        set() { throw "nested webpack"; },
+    const prev_m = Object.getOwnPropertyDescriptor(Function.prototype, "m")!;
+    Object.defineProperty(Function.prototype, "m", {
+        get() { throw "get require.m"; },
+        set() { throw "set require.m"; },
         enumerable: true,
         configurable: true,
     });
@@ -13,7 +12,7 @@ export async function protectWebpack<T>(webpack: any[], body: () => Promise<T>):
     try {
         return await body();
     } finally {
-        Object.defineProperty(webpack, "push", webpack_push);
+        Object.defineProperty(Function.prototype, "m", prev_m);
     }
 }
 
