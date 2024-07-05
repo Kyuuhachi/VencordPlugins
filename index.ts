@@ -6,8 +6,10 @@ const PLUGINS = [
     require("./DeadMembers").default,
     require("./MessageLinkTooltip").default,
     require("./ModalFade").default,
+    require("./NotificationTitle").default,
     require("./TeX").default,
     require("./Title").default,
+    require("./ViewRaw2").default,
     require("./WebpackTarball").default,
     require("./Classify").default,
 ];
