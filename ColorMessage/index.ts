@@ -3,9 +3,9 @@ import * as Styles from "@api/Styles";
 import { makeRange } from "@components/PluginSettings/components";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
-import { findByPropsLazy } from "@webpack";
+import { findByCodeLazy } from "@webpack";
 
-const AuthorStore = findByPropsLazy("useNullableMessageAuthor", "useNullableMessageAuthor");
+const useMessageAuthor = findByCodeLazy('"Result cannot be null because the message is not null"');
 
 import style from "./style.css?managed";
 
@@ -34,16 +34,16 @@ export default definePlugin({
 
     patches: [
         {
-            find: 'default.Messages.MESSAGE_EDITED,")"',
+            find: '.Messages.MESSAGE_EDITED,")"',
             replacement: {
-                match: /id:\(0,\w+.getMessageContentId\)\((\w+)\),/,
-                replace: '$&style:{"--98-message-color":$self.getMessageColor($1)},'
+                match: /(?<=isUnsupported\]:(\i)\.isUnsupported\}\),)(?=children:\[)/,
+                replace: 'style:{"--98-message-color":$self.useMessageColor($1)},'
             }
         },
     ],
 
-    getMessageColor(messageId: string) {
-        return AuthorStore.default(messageId).colorString;
+    useMessageColor(messageId: string) {
+        return useMessageAuthor(messageId).colorString;
     },
 
     start() {

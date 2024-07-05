@@ -51,14 +51,14 @@ export default definePlugin({
             predicate: () => settings.store.dms,
         },
         { // Above DMs, keyboard nav
-            find: ".default.hasLibraryApplication()&&!",
+            find: ".hasLibraryApplication()&&!",
             replacement: [
                 {
-                    match: /\i\.Routes\.APPLICATION_STORE,/,
+                    match: /\i\.\i\.APPLICATION_STORE,/,
                     replace: "/*$&*/",
                 },
                 {
-                    match: /\i\.Routes\.COLLECTIBLES_SHOP,/,
+                    match: /\i\.\i\.COLLECTIBLES_SHOP,/,
                     replace: "/*$&*/",
                 },
             ],
@@ -66,10 +66,16 @@ export default definePlugin({
         },
         { // Settings, sidebar
             find: "Messages.BILLING_SETTINGS",
-            replacement: {
-                match: /\{header:[^:,]*\.Messages.BILLING_SETTINGS,[^}]*\]},/,
-                replace: "/*$&*/"
-            },
+            replacement: [
+                {
+                    match: /(?<=Messages.BILLING_SETTINGS,)/,
+                    replace: "capitalism:true,"
+                },
+                {
+                    match: /\i\?\i:\i\.toSpliced\(3,0,\i\)/,
+                    replace: "($&).filter(e=>!e.capitalism)",
+                },
+            ],
             predicate: () => settings.store.billing,
         },
         { // Gift button
@@ -81,15 +87,15 @@ export default definePlugin({
             predicate: () => settings.store.gift,
         },
         { // Emoji list
-            find: "useEmojiGrid:function()",
+            find: "Messages.EMOJI_PICKER_CREATE_EMOJI_TITLE,size:",
             replacement: {
-                match: /(\w+)=!\w+&&\w+.default.isEmojiCategoryNitroLocked\(\{[^}]*\}\);/,
+                match: /(\w+)=!\w+&&\w+.\i.isEmojiCategoryNitroLocked\(\{[^}]*\}\);/,
                 replace: "$&$1||"
             },
             predicate: () => settings.store.emojiList,
         },
         { // Emoji category list
-            find: "useEmojiCategories:function()",
+            find: "Messages.EMOJI_CATEGORY_TOP_GUILD_EMOJI.format({",
             replacement: {
                 match: /(?<=(\i)\.unshift\((\i)\):)(?=\1\.push\(\2\))/,
                 replace: "$2.isNitroLocked||"

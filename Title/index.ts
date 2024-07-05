@@ -1,9 +1,9 @@
 import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
-import { findByPropsLazy } from "@webpack";
+import { findByCodeLazy, findByPropsLazy } from "@webpack";
 
-const TitleManager = findByPropsLazy("setPageTitleNotificationCount", "flashPageTitle");
+const flashPageTitle = findByCodeLazy("=>({flashQueue:[...");
 const rootTitle = { base: null as string | null };
 
 export const settings = definePluginSettings({
@@ -17,7 +17,7 @@ export const settings = definePluginSettings({
 
 function setTitle(v: string) {
     rootTitle.base = v || null;
-    TitleManager.flashPageTitle({ messages: 0 })();
+    flashPageTitle({ messages: 0 })();
 }
 
 export default definePlugin({
@@ -28,10 +28,10 @@ export default definePlugin({
 
     patches: [
         {
-            find: "setPageTitleNotificationCount:function()",
+            find: 'isPlatformEmbedded?void 0:"Discord"',
             replacement: {
-                match: /(?<==)(?={base:)/,
-                replace: "$self.rootTitle??",
+                match: /\{base:\i\("?\d+?"?\)\.isPlatformEmbedded\?void 0:"Discord"\}/,
+                replace: "$self.rootTitle",
             },
         },
     ],
