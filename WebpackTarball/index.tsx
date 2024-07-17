@@ -56,8 +56,8 @@ async function saveTar(patched: boolean) {
     const root = patched ? `vencord-${buildNumber}` : `discord-${buildNumber}`;
 
     for(const [id, module] of Object.entries(wreq.m)) {
-        const patchedSrc = module.toString();
-        const originalSrc = (module.original ?? module).toString();
+        const patchedSrc = Function.toString.call(module);
+        const originalSrc = module.toString();
         if(patched && patchedSrc != originalSrc)
             tar.addTextFile(
                 `${root}/${id}.v.js`,
