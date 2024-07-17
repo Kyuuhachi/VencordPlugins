@@ -39,9 +39,8 @@ export default definePlugin({
 
 export const getBuildNumber = makeLazy(() => {
     try {
-        const initSentry = findByProps("initSentry").initSentry.toString();
-        const [, buildNumber] = initSentry.match(/\.setTag\("buildNumber",\(\w+="(\d+)","\1"\)\)/);
-        const [, builtAt] = initSentry.match(/\.setTag\("builtAt",String\("(\d+)"\)\)/);
+        const metrics = findByProps("_getMetricWithDefaults")._flush.toString();
+        const [, builtAt, buildNumber] = metrics.match(/\{built_at:"(\d+)",build_number:"(\d+)"\}/);
         return { buildNumber, builtAt: new Date(Number(builtAt)) };
     } catch(e) {
         console.error("failed to get build number:", e);
