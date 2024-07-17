@@ -1,4 +1,4 @@
-import Plugins from "~plugins";
+import Plugins, { PluginMeta } from "~plugins";
 
 const PLUGINS = [
     require("./Anammox").default,
@@ -27,8 +27,15 @@ Set = new Proxy(Set, {
         if(Plugins && Plugins[name as any]) {
             Set = target;
             delete Plugins[name as any];
-            for(const plugin of PLUGINS)
+            const myMeta = PluginMeta[name as any];
+            delete PluginMeta[name as any];
+            for(const plugin of PLUGINS) {
                 Plugins[plugin.name] = plugin;
+                PluginMeta[plugin.name] = {
+                    userPlugin: myMeta.userPlugin,
+                    folderName: myMeta.folderName + "/" + plugin.name,
+                };
+            }
         }
         return Reflect.construct(target, args);
     }
