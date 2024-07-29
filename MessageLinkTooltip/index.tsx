@@ -5,7 +5,7 @@ import { Devs } from "@utils/constants";
 import { proxyLazy } from "@utils/lazy";
 import definePlugin from "@utils/types";
 import { findComponentByCodeLazy } from "@webpack";
-import { ChannelStore, Forms, MessageStore, RestAPI, Tooltip, useEffect, useState, useStateFromStores } from "@webpack/common";
+import { ChannelStore, Constants, Forms, MessageStore, RestAPI, Tooltip, useEffect, useState, useStateFromStores } from "@webpack/common";
 import type { ComponentType, HTMLAttributes } from "react";
 
 declare enum SpinnerTypes {
@@ -101,7 +101,7 @@ function useMessage(channelId, messageId) {
         if(message == null)
             (async () => {
                 const res = await RestAPI.get({
-                    url: `/channels/${channelId}/messages`,
+                    url: Constants.Endpoints.MESSAGES(channelId)`,
                     query: {
                         limit: 1,
                         around: messageId,
