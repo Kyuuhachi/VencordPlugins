@@ -1,5 +1,7 @@
 import "./style.css";
 
+import { definePluginSettings } from "@api/Settings";
+import { getUserSettingLazy } from "@api/UserSettings";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Devs } from "@utils/constants";
 import { proxyLazy } from "@utils/lazy";
@@ -32,12 +34,38 @@ const { Spinner } = proxyLazy(() => Forms as any as {
     SpinnerTypes: typeof SpinnerTypes;
 });
 
+const MessageDisplayCompact = getUserSettingLazy("textAndImages", "messageDisplayCompact")!;
+
 const ChannelMessage = findComponentByCodeLazy("isFirstMessageInForumPost", "trackAnnouncementViews") as ComponentType<any>;
+
+const settings = {
+    display: {
+        description: "Display style",
+        type: OptionType.SELECT,
+        options: [
+            {
+                label: "Same as message",
+                value: "auto",
+                default: true
+            },
+            {
+                label: "Compact",
+                value: "compact"
+            },
+            {
+                label: "Cozy",
+                value: "cozy"
+            },
+        ]
+    },
+};
 
 export default definePlugin({
     name: "MessageLinkTooltip",
     description: "Like MessageLinkEmbed but without taking space",
     authors: [Devs.Kyuuhachi],
+
+    settings,
 
     patches: [
         {
@@ -78,6 +106,10 @@ export default definePlugin({
 function MessagePreview({ channelId, messageId }) {
     const channel = ChannelStore.getChannel(channelId);
     const message = useMessage(channelId, messageId);
+    const rawCompact = MessageDisplayCompact.useSetting();
+
+    const compact = settings.store.display == "compact" ? true : settings.store.display == "cozy" ? false : rawCompact;
+
     // TODO handle load failure
     if(!message) {
         return <Spinner type={Spinner.Type.PULSING_ELLIPSIS} />;
@@ -88,6 +120,7 @@ function MessagePreview({ channelId, messageId }) {
         message={message}
         channel={channel}
         subscribeToComponentDispatch={false}
+        compact={compact}
     />;
 }
 
