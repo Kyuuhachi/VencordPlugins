@@ -39,6 +39,24 @@ const MessageDisplayCompact = getUserSettingLazy("textAndImages", "messageDispla
 const ChannelMessage = findComponentByCodeLazy("isFirstMessageInForumPost", "trackAnnouncementViews") as ComponentType<any>;
 
 const settings = definePluginSettings({
+    onLink: {
+        description: "Show tooltip when hovering over message links",
+        type: OptionType.BOOLEAN,
+        default: true,
+        restartNeeded: true,
+    },
+    onReply: {
+        description: "Show tooltip when hovering over message replies",
+        type: OptionType.BOOLEAN,
+        default: true,
+        restartNeeded: true,
+    },
+    onForward: {
+        description: "Show tooltip when hovering over forwarded messages",
+        type: OptionType.BOOLEAN,
+        default: true,
+        restartNeeded: true,
+    },
     display: {
         description: "Display style",
         type: OptionType.SELECT,
@@ -71,37 +89,61 @@ export default definePlugin({
         {
             find: ',className:"channelMention",children:[',
             replacement: {
-                match: /(?<=\.jsxs\)\()(\i\.\i)(?=,\{role:"link")/,
-                replace: "$self.wrapComponent(arguments[0], $1)"
-            }
-        }
+                match: /(?<=\.jsxs\)\()(\i\.\i),\{(?=role:"link")/,
+                replace: "$self.MentionTooltip,{Component:$1,vcProps:arguments[0],"
+            },
+            predicate: () => settings.store.onLink,
+        },
+        {
+            find: "Messages.REPLY_QUOTE_MESSAGE_NOT_LOADED",
+            replacement: {
+                // Should match two places
+                match: /(\i\.Clickable),\{/g,
+                replace: "$self.ReplyTooltip,{Component:$1,vcProps:arguments[0],"
+            },
+            predicate: () => settings.store.onReply,
+        },
+        {
+            find: "Messages.MESSAGE_FORWARDED}",
+            replacement: {
+                match: /(\i\.Clickable),\{/,
+                replace: "$self.ForwardTooltip,{Component:$1,vcProps:arguments[0],"
+            },
+            predicate: () => settings.store.onForward,
+        },
     ],
 
-    wrapComponent({ messageId, channelId }, Component: ComponentType) {
-        return props => {
-            if(messageId === undefined) return <Component {...props} />;
-            return <Tooltip
-                tooltipClassName="c98-message-link-tooltip"
-                text={
-                    <ErrorBoundary>
-                        <MessagePreview
-                            channelId={channelId}
-                            messageId={messageId}
-                        />
-                    </ErrorBoundary>
-                }
-            >
-                {({ onMouseEnter, onMouseLeave }) =>
-                    <Component
-                        {...props}
-                        onMouseEnter={onMouseEnter}
-                        onMouseLeave={onMouseLeave}
-                    />
-                }
-            </Tooltip>;
-        };
-    }
+    MentionTooltip({ Component, vcProps, ...props }) {
+        return withTooltip(Component, props, vcProps.messageId, vcProps.channelId);
+    },
+
+    ReplyTooltip({ Component, vcProps, ...props }) {
+        const mess = vcProps.baseMessage.messageReference;
+        return withTooltip(Component, props, mess?.message_id, mess?.channel_id);
+    },
+
+    ForwardTooltip({ Component, vcProps, ...props }) {
+        const mess = vcProps.message.messageReference;
+        return withTooltip(Component, props, mess?.message_id, mess?.channel_id);
+    },
 });
+
+function withTooltip(Component, props, messageId, channelId) {
+    if(!messageId) return <Component {...props} />;
+    return <Tooltip
+        tooltipClassName="c98-message-link-tooltip"
+        text={
+            <ErrorBoundary>
+                <MessagePreview
+                    channelId={channelId}
+                    messageId={messageId}
+                />
+            </ErrorBoundary>
+        }
+        children={({ onMouseEnter, onMouseLeave }) =>
+            <Component {...props} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} />}
+    />;
+}
 
 function MessagePreview({ channelId, messageId }) {
     const channel = ChannelStore.getChannel(channelId);
