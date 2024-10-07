@@ -89,7 +89,7 @@ export default definePlugin({
         { // Emoji list
             find: "Messages.EMOJI_PICKER_CREATE_EMOJI_TITLE,size:",
             replacement: {
-                match: /(\w+)=!\w+&&\w+.\i.isEmojiCategoryNitroLocked\(\{[^}]*\}\);/,
+                match: /(\i)=\i\|\|!\i&&\i.\i.isEmojiCategoryNitroLocked\(\{[^}]*\}\);/,
                 replace: "$&$1||"
             },
             predicate: () => settings.store.emojiList,
