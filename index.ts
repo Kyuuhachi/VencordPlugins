@@ -5,6 +5,7 @@ const PLUGINS = [
     require("./DeadMembers").default,
     require("./MessageLinkTooltip").default,
     require("./ModalFade").default,
+    require("./MoreThemes").default,
     require("./NotificationTitle").default,
     require("./TeX").default,
     require("./Title").default,
