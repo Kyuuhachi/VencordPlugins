@@ -134,7 +134,7 @@ function useMessage(channelId, messageId) {
         if(message == null)
             (async () => {
                 const res = await RestAPI.get({
-                    url: Constants.Endpoints.MESSAGES(channelId)`,
+                    url: Constants.Endpoints.MESSAGES(channelId),
                     query: {
                         limit: 1,
                         around: messageId,
