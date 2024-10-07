@@ -5,7 +5,7 @@ import { getUserSettingLazy } from "@api/UserSettings";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Devs } from "@utils/constants";
 import { proxyLazy } from "@utils/lazy";
-import definePlugin from "@utils/types";
+import definePlugin, { OptionType } from "@utils/types";
 import { findComponentByCodeLazy } from "@webpack";
 import { ChannelStore, Constants, Forms, MessageStore, RestAPI, Tooltip, useEffect, useState, useStateFromStores } from "@webpack/common";
 import type { ComponentType, HTMLAttributes } from "react";
@@ -38,7 +38,7 @@ const MessageDisplayCompact = getUserSettingLazy("textAndImages", "messageDispla
 
 const ChannelMessage = findComponentByCodeLazy("isFirstMessageInForumPost", "trackAnnouncementViews") as ComponentType<any>;
 
-const settings = {
+const settings = definePluginSettings({
     display: {
         description: "Display style",
         type: OptionType.SELECT,
@@ -58,7 +58,7 @@ const settings = {
             },
         ]
     },
-};
+});
 
 export default definePlugin({
     name: "MessageLinkTooltip",
