@@ -1,11 +1,12 @@
 import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { CodeBlock } from "@components/CodeBlock";
 import ErrorBoundary from "@components/ErrorBoundary";
+import { getIntlMessage } from "@utils/discord";
 import { Devs } from "@utils/constants";
 import { Margins } from "@utils/margins";
 import { closeModal, ModalCloseButton, ModalContent, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
-import { Forms, i18n, Menu, Text } from "@webpack/common";
+import { Forms, Menu, Text } from "@webpack/common";
 import { Message } from "discord-types/general";
 
 const CopyIcon = () => {
@@ -53,7 +54,7 @@ function openViewRawModal(obj: any, type: string, isMessage?: boolean) {
 
 function makeContextCallback(name: string, action: (any) => void): NavContextMenuPatchCallback {
     return (children, props) => {
-        if (props.label === i18n.Messages.CHANNEL_ACTIONS_MENU_LABEL) return; // random shit like notification settings
+        if (props.label === getIntlMessage("CHANNEL_ACTIONS_MENU_LABEL")) return; // random shit like notification settings
 
         const value = props[name];
         if (!value) return;

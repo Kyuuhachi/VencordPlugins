@@ -95,7 +95,7 @@ export default definePlugin({
             predicate: () => settings.store.onLink,
         },
         {
-            find: "Messages.REPLY_QUOTE_MESSAGE_NOT_LOADED",
+            find: "#{intl::REPLY_QUOTE_MESSAGE_NOT_LOADED}",
             replacement: {
                 // Should match two places
                 match: /(\i\.Clickable),\{/g,
@@ -104,7 +104,7 @@ export default definePlugin({
             predicate: () => settings.store.onReply,
         },
         {
-            find: "Messages.MESSAGE_FORWARDED}",
+            find: "#{intl::MESSAGE_FORWARDED}",
             replacement: {
                 match: /(\i\.Clickable),\{/,
                 replace: "$self.ForwardTooltip,{Component:$1,vcProps:arguments[0],"
