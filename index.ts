@@ -7,6 +7,7 @@ const PLUGINS = [
     require("./ModalFade").default,
     require("./MoreThemes").default,
     require("./NotificationTitle").default,
+    require("./Onward").default,
     require("./TeX").default,
     require("./Title").default,
     require("./ViewRaw2").default,
