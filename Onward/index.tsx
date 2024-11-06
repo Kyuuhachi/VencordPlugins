@@ -13,7 +13,14 @@ export default definePlugin({
                 match: /:(\i)\((\i),\i\)(?=\.slice\(0,15\))/,
                 replace: ":$1($2)"
             },
-        }
+        },
+        {
+            find: 'this,"parseUserResults",',
+            replacement: {
+                match: /return 1e3\*/,
+                replace: "return 250*"
+            },
+        },
     ],
 });
 
