@@ -32,6 +32,10 @@ const ANIMS = {
         off: { opacity: 1 },
         on: { opacity: 0.7 },
     },
+    IMMERSIVE: {
+        off: { opacity: 1 },
+        on: { opacity: 0.7 },
+    },
     BLUR: {
         off: { opacity: 1, filter: "blur(0px)" },
         on: { opacity: 0.7, filter: "blur(8px)" },
@@ -73,7 +77,7 @@ export default definePlugin({
         const context = useModalContext();
         const modals = useModalsStore(modals => modals[context] ?? []);
         const modal = modals.findLast(modal => modal.Layer == null); // || modal.Layer === AppLayer
-        const anim = ANIMS[modal?.backdropStyle ?? "DARK"];
+        const anim = ANIMS[modal?.backdropStyle ?? "DARK"] ?? ANIMS.DARK;
         const isInstant = modal?.instant;
         const prevIsInstant = usePrevious(isInstant);
         const style = useSpring({
