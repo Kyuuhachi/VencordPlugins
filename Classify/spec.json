@@ -112,6 +112,7 @@
     { "name": "MembersWrap", "include": ["membersWrap", "members", "member", "membersGroup", "hiddenMembers", "memberGroupsPlaceholder"]},
     { "name": "MemberInner", "include": ["nameAndDecorators", "subText", "wrappedName"], "exclude":["container"] },
     { "name": "MemberSidebarActivity", "include": ["contentTitle", "additionalParticipantBadge", "openOnHover", "infoSection", "userSection", "facePile", "openOnHover"] },
+    { "name": "MemberSidebarActivityHeader", "include": ["headerContainer", "header", "toggleExpandIcon"], "exact": true },
     { "name": "Members", "include": ["membersGroup", "membersWrap", "placeholderPulse"] },
     { "name": "Message", "include": ["automodMessage", "groupStart", "quotedChatMessage"] },
     { "name": "MessageAccessories", "include": ["embedWrapper"] },
