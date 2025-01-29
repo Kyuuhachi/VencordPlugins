@@ -1,8 +1,7 @@
 import { Devs } from "@utils/constants";
-import { proxyLazy } from "@utils/lazy";
 import definePlugin from "@utils/types";
-import { findByPropsLazy } from "@webpack";
-import { Forms, useEffect, useRef } from "@webpack/common";
+import { filters, findByPropsLazy, mapMangledModuleLazy } from "@webpack";
+import { useEffect, useRef } from "@webpack/common";
 import type { StoreApi, UseBoundStore } from "zustand";
 
 type Modal = {
@@ -11,17 +10,15 @@ type Modal = {
     backdropStyle?: "SUBTLE" | "DARK" | "BLUR",
 };
 
-const { useModalContext, useModalsStore } = proxyLazy(() => Forms as any as {
-    useModalContext(): "default" | "popout";
-    useModalsStore: UseBoundStore<StoreApi<{
-        default: Modal[];
-        popout: Modal[];
-    }>>,
-});
+const { useModalContext } = mapMangledModuleLazy("ENTERED:this.state.transitionState;return", {
+    useModalContext: filters.byCode(")())}")
+}) as { useModalContext(): "default" | "popout" };
+
+const { useModalsStore } = mapMangledModuleLazy("?arguments[1]:{},{contextKey:", {
+    useModalsStore: filters.byCode(/^(\i)=>\i\(\i,\1\)$/),
+}) as { useModalsStore: UseBoundStore<StoreApi<{ default: Modal[]; popout: Modal[]; }>> };
 
 const { animated, useSpring, useTransition } = findByPropsLazy("a", "animated", "useTransition");
-// This doesn't seem to be necessary
-// const { default: AppLayer } = findByPropsLazy("AppLayerContainer", "AppLayerProvider");
 
 const ANIMS = {
     SUBTLE: {
@@ -56,9 +53,9 @@ export default definePlugin({
             }
         },
         {
-            find: "{})).SUBTLE=\"SUBTLE\"",
+            find: ".SUBTLE=\"SUBTLE\"",
             replacement: {
-                match: /\(0,\i\.useTransition\)*/,
+                match: /\(0,\i.\i\)(?=\(\i,\{keys:\i=>\i\?"backdrop":"empty",)/,
                 replace: "$self.nullTransition"
             }
         },
