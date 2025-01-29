@@ -16,10 +16,10 @@ export default definePlugin({
             all: true,
         },
         { // make it actually save the setting instead of falling back to dark
-            find: 'getCurrentConfig({location:"ThemeStore"}).enabled',
+            find: ')("ThemeStore"))return',
             replacement: {
-                match: /getCurrentConfig\(\{location:"ThemeStore"\}\)\.enabled/,
-                replace: "$&&&false"
+                match: /(?<=\)\("ThemeStore"\))(?=\)return)/,
+                replace: "&&false"
             },
         }
     ],
