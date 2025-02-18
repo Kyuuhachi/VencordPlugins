@@ -1,4 +1,3 @@
-import { WEBPACK_CHUNK } from "@utils/constants";
 import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
 import { makeLazy } from "@utils/lazy";
@@ -120,7 +119,7 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
                             disabled={loading === all || isLoading}
                             onClick={async () => {
                                 setLoading(true);
-                                await Webpack.protectWebpack(window[WEBPACK_CHUNK], async () => {
+                                await Webpack.protectWebpack(async () => {
                                     await Webpack.forceLoadAll(wreq, rerender);
                                 });
                             }}
