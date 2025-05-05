@@ -89,7 +89,7 @@
     { "name": "GuildList", "include": ["isCurrentUserConnected", "listItem", "serverEmoji", "tutorialContainer"] },
     { "name": "GuildListDMPill", "include": ["pill"], "exact": true },
     { "name": "GuildListDND", "include": ["centerTarget", "folderEndWrapper"] },
-    { "name": "GuildListFolder", "include": ["expandedFolderBackground", "folder", "miniPlaceholder"] },
+    { "name": "GuildListFolder", "include": ["folderGroup", "folderHeader", "folderGroupBackground", "folderButton", "folderButtonContent", "folderIcon", "folderIconWrapper", "folderPreview", "folderPreviewWrapper", "folderPreviewGuildIcon"] },
     { "name": "GuildListItem", "include": ["blobContainer", "pill", "selected", "wobble"] },
     { "name": "GuildListItemIcon", "include": ["acronym", "childWrapper", "icon", "selected"] },
     { "name": "GuildListPill", "include": ["item", "wrapper"], "exact": true },
