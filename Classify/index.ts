@@ -71,7 +71,8 @@ export default definePlugin({
         }
     },
 
-    remap(className: string) {
+    remap(className: string | null) {
+        if (!className) return className;
         return className.split(" ").map(c => this.classes[c] ?? c).join("\n");
     },
 
