@@ -85,12 +85,12 @@ export default definePlugin({
             predicate: () => settings.store.billing,
         },
         { // Gift button
-            find: '"ChannelTextAreaButtons"',
+            find: '"sticker")',
             replacement: { match: /&&\i\.push\(\([^&]*?,"gift"\)\)/, replace: "", },
             predicate: () => settings.store.gift,
         },
         { // Gif and sticker buttons
-            find: '"ChannelTextAreaButtons"',
+            find: '"sticker")',
             replacement: [
                  { match: /&&\i\.push\([^&]*?,"gif"\)\)/, replace: "", },
                  { match: /&&\i\.push\([^&]*?,"sticker"\)\)/, replace: "", },
