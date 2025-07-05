@@ -9,6 +9,12 @@ export const settings = definePluginSettings({
         description: "Remove shops above DMs list",
         restartNeeded: true,
     },
+    serverBoost: {
+        type: OptionType.BOOLEAN,
+        default: true,
+        description: "Remove server boost info above channel list",
+        restartNeeded: true,
+    },
     billing: {
         type: OptionType.BOOLEAN,
         default: true,
@@ -69,6 +75,14 @@ export default definePlugin({
                 },
             ],
             predicate: () => settings.store.dms,
+        },
+        { // Channel list server boost progress bar
+            find: "useGuildActionRow",
+            replacement: {
+                match: /\i\.premiumProgressBarEnabled&&[^,]+/,
+                replace: "null"
+            },
+            predicate: () => settings.store.serverBoost,
         },
         { // Settings, sidebar
             find: "#{intl::BILLING_SETTINGS}",
