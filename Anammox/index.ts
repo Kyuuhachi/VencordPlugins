@@ -9,6 +9,12 @@ export const settings = definePluginSettings({
         description: "Remove shops above DMs list",
         restartNeeded: true,
     },
+    serverBoost: {
+        type: OptionType.BOOLEAN,
+        default: true,
+        description: "Remove server boost info above channel list",
+        restartNeeded: true,
+    },
     billing: {
         type: OptionType.BOOLEAN,
         default: true,
@@ -70,6 +76,14 @@ export default definePlugin({
             ],
             predicate: () => settings.store.dms,
         },
+        { // Channel list server boost progress bar
+            find: "useGuildActionRow",
+            replacement: {
+                match: /\i\.premiumProgressBarEnabled&&[^,]+/,
+                replace: "null"
+            },
+            predicate: () => settings.store.serverBoost,
+        },
         { // Settings, sidebar
             find: "#{intl::BILLING_SETTINGS}",
             replacement: [
@@ -85,12 +99,12 @@ export default definePlugin({
             predicate: () => settings.store.billing,
         },
         { // Gift button
-            find: '"ChannelTextAreaButtons"',
+            find: '"sticker")',
             replacement: { match: /&&\i\.push\(\([^&]*?,"gift"\)\)/, replace: "", },
             predicate: () => settings.store.gift,
         },
         { // Gif and sticker buttons
-            find: '"ChannelTextAreaButtons"',
+            find: '"sticker")',
             replacement: [
                  { match: /&&\i\.push\([^&]*?,"gif"\)\)/, replace: "", },
                  { match: /&&\i\.push\([^&]*?,"sticker"\)\)/, replace: "", },
