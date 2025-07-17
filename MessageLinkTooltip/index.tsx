@@ -4,13 +4,12 @@ import { definePluginSettings } from "@api/Settings";
 import { getUserSettingLazy } from "@api/UserSettings";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Devs } from "@utils/constants";
-import { proxyLazy } from "@utils/lazy";
 import definePlugin, { OptionType } from "@utils/types";
 import { findComponentByCodeLazy } from "@webpack";
 import { ChannelStore, Constants, Forms, MessageStore, RestAPI, Tooltip, useEffect, useState, useStateFromStores } from "@webpack/common";
 import type { ComponentType, HTMLAttributes } from "react";
 
-declare enum SpinnerTypes {
+enum SpinnerTypes {
     WANDERING_CUBES = "wanderingCubes",
     CHASING_DOTS = "chasingDots",
     PULSING_ELLIPSIS = "pulsingEllipsis",
@@ -19,23 +18,14 @@ declare enum SpinnerTypes {
     LOW_MOTION = "lowMotion",
 }
 
-type Spinner = ComponentType<Omit<HTMLAttributes<HTMLDivElement>, "children"> & {
+const Spinner = findComponentByCodeLazy('"spinningCircleSimple"===') as ComponentType<Omit<HTMLAttributes<HTMLDivElement>, "children"> & {
     type?: SpinnerTypes;
     animated?: boolean;
     className?: string;
     itemClassName?: string;
     "aria-label"?: string;
-}> & {
-    Type: typeof SpinnerTypes;
-};
-
-const { Spinner } = proxyLazy(() => Forms as any as {
-    Spinner: Spinner,
-    SpinnerTypes: typeof SpinnerTypes;
-});
-
+}>;
 const MessageDisplayCompact = getUserSettingLazy("textAndImages", "messageDisplayCompact")!;
-
 const ChannelMessage = findComponentByCodeLazy("isFirstMessageInForumPost", "trackAnnouncementViews") as ComponentType<any>;
 
 const settings = definePluginSettings({
@@ -154,7 +144,7 @@ function MessagePreview({ channelId, messageId }) {
 
     // TODO handle load failure
     if(!message) {
-        return <Spinner type={Spinner.Type.PULSING_ELLIPSIS} />;
+        return <Spinner type={SpinnerTypes.PULSING_ELLIPSIS} />;
     }
 
     return <ChannelMessage
