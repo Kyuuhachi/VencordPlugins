@@ -9,6 +9,12 @@ export const settings = definePluginSettings({
         description: "Remove shops above DMs list",
         restartNeeded: true,
     },
+    quests: {
+        type: OptionType.BOOLEAN,
+        default: true,
+        description: "Remove quests above DMs list",
+        restartNeeded: true,
+    },
     serverBoost: {
         type: OptionType.BOOLEAN,
         default: true,
@@ -75,6 +81,22 @@ export default definePlugin({
                 },
             ],
             predicate: () => settings.store.dms,
+        },
+        { // Above DMs, mouse nav (for quests)
+            find: 'tutorialId:"direct-messages"',
+            replacement: {
+                match: /"quests"\)/,
+                replace: "$&&&undefined",
+            },
+            predicate: () => settings.store.quests,
+        },
+        { // Above DMs, keyboard nav (for quests)
+            find: ".hasLibraryApplication()&&!",
+            replacement: {
+                match: /\i\.\i\.QUEST_HOME_V2:null\b/,
+                replace: "null:null",
+            },
+            predicate: () => settings.store.quests,
         },
         { // Channel list server boost progress bar
             find: "useGuildActionRow",
