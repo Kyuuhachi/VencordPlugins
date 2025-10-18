@@ -13,8 +13,9 @@ const TopBar = findComponentByCodeLazy('"TITLEBAR_FAST_TRAVEL"===') as any;
 const Buttons = LazyComponent(() => React.memo(() => {
     const topbarData = TopBar.$$vencordGetWrappedComponent().type()
         .props.children({}) // something with focus
-        .props.children(""); // a class name
-    return innerData.trailing;
+        .props.children("") // a class name
+        .props;
+    return topbarData.trailing;
 }));
 
 export default definePlugin({
