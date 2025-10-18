@@ -13,6 +13,7 @@ const PLUGINS = [
     require("./ViewRaw2").default,
     require("./WebpackTarball").default,
     require("./Classify").default,
+    require("./Untitled").default,
 ];
 
 for(const plugin of PLUGINS) {
