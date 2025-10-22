@@ -11,7 +11,9 @@ import "./style.css";
 const TopBar = findComponentByCodeLazy('"TITLEBAR_FAST_TRAVEL"===') as any;
 
 const Buttons = LazyComponent(() => React.memo(() => {
-    const topbarData = TopBar.$$vencordGetWrappedComponent().type()
+    const content = TopBar.$$vencordGetWrappedComponent().type();
+    if (!content) return null; // it returns null if something is fullscreen
+    const topbarData = content
         .props.children({}) // something with focus
         .props.children("") // a class name
         .props;
