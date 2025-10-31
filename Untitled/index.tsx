@@ -6,7 +6,7 @@ import definePlugin, { OptionType } from "@utils/types";
 import { findComponentByCodeLazy } from "@webpack";
 import { React } from "@webpack/common";
 
-import "./style.css";
+import managedStyle from "./style.css?managed";
 
 const TopBar = findComponentByCodeLazy('"TITLEBAR_FAST_TRAVEL"===') as any;
 
@@ -24,6 +24,8 @@ export default definePlugin({
     name: "Untitled",
     description: "Removes the titlebar",
     authors: [Devs.Kyuuhachi],
+
+    managedStyle,
 
     patches: [
         {
