@@ -58,7 +58,7 @@ export default definePlugin({
             find: 'tutorialId:"direct-messages"',
             replacement: [
                 {
-                    match: /"premium"\)/,
+                    match: /"nitro-tab-group"\)/,
                     replace: "$&&&undefined",
                 },
                 {
@@ -93,8 +93,8 @@ export default definePlugin({
         { // Above DMs, keyboard nav (for quests)
             find: ".hasLibraryApplication()&&!",
             replacement: {
-                match: /\i\.\i\.QUEST_HOME_V2:null\b/,
-                replace: "null:null",
+                match: /,\i\.\i\.QUEST_HOME_V2/,
+                replace: "",
             },
             predicate: () => settings.store.quests,
         },
@@ -128,8 +128,8 @@ export default definePlugin({
         { // Gif and sticker buttons
             find: '"sticker")',
             replacement: [
-                 { match: /&&\i\.push\([^&]*?,"gif"\)\)/, replace: "", },
-                 { match: /&&\i\.push\([^&]*?,"sticker"\)\)/, replace: "", },
+                { match: /&&\i\.push\([^&]*?,"gif"\)\)/, replace: "", },
+                { match: /&&\i\.push\([^&]*?,"sticker"\)\)/, replace: "", },
             ],
             predicate: () => settings.store.gif,
         },
