@@ -107,11 +107,11 @@ export default definePlugin({
             predicate: () => settings.store.serverBoost,
         },
         { // Settings, sidebar
-            find: "#{intl::BILLING_SETTINGS}",
+            find: 'header:"Developer Only"',
             replacement: [
                 {
-                    match: /(?<=#{intl::BILLING_SETTINGS}[^,]*?,)(?=div)/,
-                    replace: "capitalism:true,"
+                    match: /header:[^,]+#{intl::BILLING_SETTINGS}\)/,
+                    replace: "capitalism:true"
                 },
                 {
                     match: /\i\?\i:\i\.toSpliced\(3,0,\i\)/,
@@ -122,14 +122,14 @@ export default definePlugin({
         },
         { // Gift button
             find: '"sticker")',
-            replacement: { match: /&&\i\.push\(\([^&]*?,"gift"\)\)/, replace: "", },
+            replacement: { match: /&&\i\.push\({[^&]*?,"gift"\)}\)/, replace: "", },
             predicate: () => settings.store.gift,
         },
         { // Gif and sticker buttons
             find: '"sticker")',
             replacement: [
-                { match: /&&\i\.push\([^&]*?,"gif"\)\)/, replace: "", },
-                { match: /&&\i\.push\([^&]*?,"sticker"\)\)/, replace: "", },
+                { match: /&&\i\.push\({[^&]*?,"gif"\)}\)/, replace: "", },
+                { match: /&&\i\.push\({[^&]*?,"sticker"\)}\)/, replace: "", },
             ],
             predicate: () => settings.store.gif,
         },
