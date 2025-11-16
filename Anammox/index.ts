@@ -45,6 +45,12 @@ export const settings = definePluginSettings({
         description: "Remove unavailable categories from the emoji picker",
         restartNeeded: true,
     },
+    settings: {
+        type: OptionType.BOOLEAN,
+        default: true,
+        description: "Remove nitro-only settings in profile and appearance sections",
+        restartNeeded: true,
+    },
 });
 
 export default definePlugin({
@@ -148,6 +154,46 @@ export default definePlugin({
                 replace: "$2.isNitroLocked||"
             },
             predicate: () => settings.store.emojiList,
-        }
+        },
+        { // Appareance settings
+            find: "children:this.renderTimestampHourCycle()",
+            replacement: {
+                match: /\(\i\.\i,\{setting:\i\.\i\.APPEARANCE_ICON,children:\(0,\i\.jsx\)\(\i\.\i,\{\}\)\}\)/,
+                replace: "$&&&false",
+            },
+            predicate: () => settings.store.settings,
+        },
+        { // Appearance settings, theme section
+            find: ".useSetting().customUserThemeSettings;return",
+            replacement: {
+                // Default themes, dark sidebar, try it out, color themes. Keep the first two.
+                // There's a leftover divider but who give a dam
+                match: /\[(\(0,\i.jsx\)\(\i\.\i\.Basic,\{className:\i\.basicThemeSelectors\}\),\(0,\i.jsx\)\(\i,\{\}\)),\(0,\i\.jsx\)\(\i\.\i,\{\}\),\i\]/,
+                replace: "[$1]",
+            },
+            predicate: () => settings.store.settings,
+        },
+        { // Profile customization
+            find: "UserSettingsProfileCustomization: user cannot be undefined",
+            replacement: [
+                { // "Go to shop" button. Don't like this match, it's fragile and risks deleting the wrong thing
+                    match: /children:\[/,
+                    replace: "$&false&&",
+                },
+                { // shouldShow = !canUsePremiumProfileCustomization. Hides the "Nitro preview" and "Try it out".
+                    match: /(\i)=!\i,/,
+                    replace: "$1=false,",
+                },
+            ],
+            predicate: () => settings.store.settings,
+        },
+        { // Profile customization for guild
+            find: ".nitroWheel})})]}),showRemoveAvatarButton:",
+            replacement: {
+                match: /\(0,\i\.jsxs\)\(\i\.\i,\{user:\i,showOverlay:!\i,/,
+                replace: "false&&$&",
+            },
+            predicate: () => settings.store.settings,
+        },
     ],
 });
