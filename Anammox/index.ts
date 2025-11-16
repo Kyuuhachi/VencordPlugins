@@ -187,6 +187,14 @@ export default definePlugin({
             ],
             predicate: () => settings.store.settings,
         },
+        { // Profile customization, inner part
+            find: "DefaultCustomizationSections: user cannot be undefined",
+            replacement: [
+                { match: /("decoration"\)),/, replace: "$1&&false,false&&" }, // for some reason nameplate is done in a different way
+                { match: /"effect"\)/, replace: "$&&&false" },
+            ],
+            predicate: () => settings.store.settings,
+        },
         { // Profile customization for guild
             find: ".nitroWheel})})]}),showRemoveAvatarButton:",
             replacement: {
