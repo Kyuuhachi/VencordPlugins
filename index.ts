@@ -23,11 +23,13 @@ for(const plugin of PLUGINS) {
 const name = Symbol("98VencordPlugins");
 export default { name };
 
-// This is called from api/Badges.ts, which is the first place that imports ~plugins
-Set = new Proxy(Set, {
-    construct(target, args) {
+// This is the earliest possible interception point
+// Found by setting a breakpoint here and stepping forward until it reaches something I can intercept
+const old = document.addEventListener;
+document.addEventListener = new Proxy(document.addEventListener, {
+    apply(target, thisArg, args) {
         if(Plugins && Plugins[name as any]) {
-            Set = target;
+            target.addEventListener = old;
             delete Plugins[name as any];
             const myMeta = PluginMeta[name as any];
             delete PluginMeta[name as any];
@@ -39,6 +41,6 @@ Set = new Proxy(Set, {
                 };
             }
         }
-        return Reflect.construct(target, args);
+        return Reflect.apply(target.addEventListener, thisArg, args);
     }
 });
