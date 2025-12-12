@@ -1,5 +1,5 @@
 :root {
-    --custom-app-top-bar-height: 0;
+    --custom-app-top-bar-height: 0px;
 }
 
 div[class^="tutorialContainer_"] {
