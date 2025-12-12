@@ -1,10 +1,11 @@
 import { definePluginSettings } from "@api/Settings";
+import { Flex } from "@components/Flex";
 import { Devs } from "@utils/constants";
 import { makeLazy } from "@utils/lazy";
 import { closeModal, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalProps, ModalRoot, openModal } from "@utils/modal";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByProps, wreq } from "@webpack";
-import { Button, Flex, Forms, Switch, Text, Timestamp, useState } from "@webpack/common";
+import { Button, Forms, Switch, Text, Timestamp, useState } from "@webpack/common";
 
 import TarFile from "./tar";
 import * as Webpack from "./webpack";
@@ -88,8 +89,8 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
     return (
         <ModalRoot {...modalProps}>
             <ModalHeader>
-                <Flex.Child>
-                    <Forms.FormTitle tag="h2">
+                <Flex flexDirection="column" gap="0px" style={{flex: "1 1 auto"}}>
+                    <Forms.FormTitle tag="h2" style={{ margin: 0 }}>
                         Webpack Tarball
                     </Forms.FormTitle>
                     <Text variant="text-md/normal">
@@ -98,7 +99,7 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
                             {buildNumber}
                         </Timestamp>
                     </Text>
-                </Flex.Child>
+                </Flex>
                 <ModalCloseButton onClick={close} />
             </ModalHeader>
 
@@ -107,11 +108,8 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
                     <Forms.FormTitle>
                         Lazy chunks
                     </Forms.FormTitle>
-                    <Flex align={Flex.Align.CENTER}>
-                        <Text
-                            variant="text-md/normal"
-                            style={{ flexGrow: 1 }}
-                        >
+                    <Flex alignItems="center">
+                        <Text variant="text-md/normal" style={{ flexGrow: 1 }}>
                             {loaded}/{all}
                             {errored ? ` (${errored} errors)` : null}
                         </Text>
