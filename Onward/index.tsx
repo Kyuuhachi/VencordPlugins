@@ -10,8 +10,8 @@ export default definePlugin({
         {
             find: ".DM?{type:\"user\",id:",
             replacement: {
-                match: /:(\i)\((\i),\i\)(?=\.slice\(0,15\))/,
-                replace: ":$1($2)"
+                match: /\?\[\]:\[\i\.id\];/,
+                replace: "?[]:[];"
             },
         },
         {
