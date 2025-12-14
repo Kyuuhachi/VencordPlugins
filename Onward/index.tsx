@@ -14,13 +14,6 @@ export default definePlugin({
                 replace: "?[]:[];"
             },
         },
-        {
-            find: 'this,"parseUserResults",',
-            replacement: {
-                match: /return 1e3\*/,
-                replace: "return 250*"
-            },
-        },
     ],
 });
 
