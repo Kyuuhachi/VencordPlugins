@@ -64,11 +64,11 @@ export default definePlugin({
             find: 'tutorialId:"direct-messages"',
             replacement: [
                 {
-                    match: /"nitro-tab-group"\)/,
+                    match: /},"nitro-tab-group"\)/,
                     replace: "$&&&undefined",
                 },
                 {
-                    match: /"discord-shop"\)/,
+                    match: /},"discord-shop"\)/,
                     replace: "$&&&undefined",
                 },
             ],
@@ -91,7 +91,7 @@ export default definePlugin({
         { // Above DMs, mouse nav (for quests)
             find: 'tutorialId:"direct-messages"',
             replacement: {
-                match: /"quests"\)/,
+                match: /},"quests"\)/,
                 replace: "$&&&undefined",
             },
             predicate: () => settings.store.quests,
@@ -99,16 +99,16 @@ export default definePlugin({
         { // Above DMs, keyboard nav (for quests)
             find: ".hasLibraryApplication()&&!",
             replacement: {
-                match: /,\i\.\i\.QUEST_HOME_V2/,
+                match: /,\i\.\i\.QUEST_HOME/,
                 replace: "",
             },
             predicate: () => settings.store.quests,
         },
         { // Channel list server boost progress bar
-            find: "useGuildActionRow",
+            find: "GUILD_PREMIUM_PROGRESS_BAR:",
             replacement: {
-                match: /\i\.premiumProgressBarEnabled&&[^,]+/,
-                replace: "null"
+                match: "GUILD_PREMIUM_PROGRESS_BAR:",
+                replace: "$&return null;",
             },
             predicate: () => settings.store.serverBoost,
         },
@@ -128,19 +128,19 @@ export default definePlugin({
         },
         { // Gift button
             find: '"sticker")',
-            replacement: { match: /&&\i\.push\({[^&]*?,"gift"\)}\)/, replace: "", },
+            replacement: { match: /\i\.gifts\?\.button!=/, replace: "", },
             predicate: () => settings.store.gift,
         },
         { // Gif and sticker buttons
             find: '"sticker")',
             replacement: [
-                { match: /&&\i\.push\({[^&]*?,"gif"\)}\)/, replace: "", },
-                { match: /&&\i\.push\({[^&]*?,"sticker"\)}\)/, replace: "", },
+                { match: /\i\.gifs\?\.button!=/, replace: "", },
+                { match: /\i\.stickers\?\.button!=/, replace: "", },
             ],
             predicate: () => settings.store.gif,
         },
         { // Emoji list
-            find: "#{intl::EMOJI_PICKER_CREATE_EMOJI_TITLE}),size:",
+            find: '="EXPAND_OR_COLLAPSE_EMOJIS"',
             replacement: {
                 match: /(\i)=\i\|\|!\i&&\i.\i.isEmojiCategoryNitroLocked\(\{[^}]*\}\);/,
                 replace: "$&$1||"
